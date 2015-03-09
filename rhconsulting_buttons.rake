@@ -32,15 +32,6 @@ class ButtonsImportExport
   private
 
   def import_resource_actions(custom_button, resource_actions, cbs)
-    #puts ResourceAction.methods.sort
-    puts "IMPORT RESOUCE ACTIONS"
-    puts resource_actions.class
-    puts "IMPORT RESOUCE ACTIONS"
-    puts "IMPORT CBS "
-    puts cbs.inspect
-    puts "IMPORT CBS"
-    # {"action"=>nil, "ae_namespace"=>"SYSTEM", "ae_class"=>"PROCESS", "ae_instance"=>"Automation", "ae_message"=>"create", "ae_attributes"=>{"attribute1"=>"value1", "request"=>"/POC/Methods/blah"}, "dialog_label"=>"Infoblox_DNS_Alias"}
-
     #count = 0
     #cbs.each do | cb_entry |
     #   puts "CBS Entry"
@@ -57,19 +48,7 @@ class ButtonsImportExport
     #   count += 1
     #end
 
-    #cbs.resource_actions = resource_actions.to_a
-    #resource_action = ResourceAction.find_by_action(resource_actions['action'])
-    #resource_action = ResourceAction.new unless resource_action
-    #cbs(resource_actions.to_a)
-    puts "resource_actions: #{resource_actions.inspect}"
-    #resource_actions.each do |ra|
-    #  puts "ra: #{ra.inspect}"
-    puts ResourceAction.inspect
     resource_action = ResourceAction.new
-
-
-#ResourceAction(id: integer, action: string, dialog_id: integer, resource_id: integer, resource_type: string, created_at: datetime, updated_at: datetime, ae_namespace: string, ae_class: string, ae_instance: string, ae_message: string, ae_attributes: text)
-#{"action"=>nil, "ae_namespace"=>"SYSTEM", "ae_class"=>"PROCESS", "ae_instance"=>"Request", "ae_message"=>"create", "ae_attributes"=>{"request"=>"Infoblox_Dialog_List_Networks"}, "dialog_label"=>"Infoblox_Dialog_List_Networks"}
 
     ra = {}
     ra['action'] = resource_actions['action']
@@ -80,8 +59,6 @@ class ButtonsImportExport
     ra['ae_instance'] = resource_actions['ae_instance']
     ra['ae_message'] = resource_actions['ae_message']
     ra['ae_attributes'] = resource_actions['ae_attributes']
-#   ra['dialog'] = nil
-#puts ra.inspect
     dialog_label = resource_actions['dialog_label']
     puts "dialog_label: #{dialog_label.inspect}"
     unless dialog_label.nil?
@@ -92,26 +69,12 @@ class ButtonsImportExport
     end
     resource_action.update_attributes!(ra)
     resource_action.save!
-    #puts resource_action.inspect
-
-    #
-    #
-    #      resource_action.update_attributes!(ra)
-    # end
   end
-
 
   def import_custom_buttons(custom_buttons, cbs, parent)
     puts "ParentID: #{parent['id'].inspect}"
     count = 0
     custom_buttons.each do |cb|
-#      import_resource_actions(cb, cbs)
-#  button = cb
-#  puts "Button: [#{cb['name']}]"
-#  puts "inspect: #{cb.inspect}"
-#ra = cb['resource_actions']
-#puts "ra: #{ra.inspect}"
-#      import_resource_actions(cb['resource_actions'], custom_button)
       resource_actions = cb['resource_actions']
       puts cb['resource_actions'].inspect
       cb.delete('resource_actions')
@@ -137,9 +100,8 @@ class ButtonsImportExport
         custom_button['applies_to_id'] = cb['applies_to_id']
         custom_button['resource_actions'] = cb['resource_actions']
         custom_button.update_attributes!(cb) unless !custom_button.nil?
-        puts "Updated custom button [#{cb['name']}]"
-        puts custom_button.inspect
-#{"description"=>"Test Hover Text", "applies_to_class"=>"Vm", "applies_to_exp"=>nil, "options"=>{:button_image=>1, :display=>true}, "userid"=>"admin", "wait_for_complete"=>nil, "name"=>"Test Button", "visibility"=>{:roles=>["_ALL_"]}, "applies_to_id"=>nil}
+       # puts "Updated custom button [#{cb['name']}]"
+       # puts custom_button.inspect
         custom_button.save!
         parent.add_member(custom_button) if parent.respond_to?(:add_member)
         custom_buttons[count] = custom_button
