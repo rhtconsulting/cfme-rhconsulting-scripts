@@ -47,9 +47,18 @@ class ButtonsImportExport
     #   end
     #   count += 1
     #end
-
     resource_action = ResourceAction.new
+    all_ra = ResourceAction.in_region(MiqRegion.my_region_number)
+    all_ra.each do |find_action|
+      #  puts "checking ra: #{find_action['id']} if it has resource_id of #{find_action['resource_id']}"
+      if find_action['resource_id'] == custom_button.id
+        #    puts "FOUND: #{find_action.inspect}"
+        resource_action = find_action
+        resource_action.reload
+      end
+    end
 
+    puts "ResourceActions PRE: #{resource_action.inspect}"
     ra = {}
     ra['action'] = resource_actions['action']
     ra['resource_id'] = custom_button.id
@@ -68,7 +77,9 @@ class ButtonsImportExport
       ra['dialog_id'] = dialog.id
     end
     resource_action.update_attributes!(ra)
+    resource_action.reload
     resource_action.save!
+    puts "ResourceActions POST: #{resource_action.inspect}"
   end
 
   def import_custom_buttons(custom_buttons, cbs, parent)
@@ -78,17 +89,19 @@ class ButtonsImportExport
       resource_actions = cb['resource_actions']
       puts cb['resource_actions'].inspect
       cb.delete('resource_actions')
-      custom_button = parent.custom_buttons.find { |x| x.name == cb['name'] }
+      custom_button = CustomButton.in_region(MiqRegion.my_region_number).find_by_name(cb['name'])
+#      custom_button = cb.custom_buttons.find { |x| x.name == cb['name'] }
       custom_button = CustomButton.new(:applies_to_id => "#{parent['id']}") unless custom_button
-      #cb['resource_actions'] = ra
+      puts "CustomButton search: #{custom_button.inspect}"
+#cb['resource_actions'] = ra
       puts "After Import"
       puts cb.inspect
       puts "After Import"
-      #  button['resource_actions'] = ra
-      #puts "button: #{button.inspect}"
+#  button['resource_actions'] = ra
+#puts "button: #{button.inspect}"
       if !custom_button.nil?
         puts "Updating custom button [#{cb['name']}]"
-        puts custom_button.inspect
+        puts cb.inspect
         custom_button['name'] = cb['name']
         custom_button['description'] = cb['description']
         custom_button['applies_to_class'] = cb['applies_to_class']
@@ -100,8 +113,8 @@ class ButtonsImportExport
         custom_button['applies_to_id'] = cb['applies_to_id']
         custom_button['resource_actions'] = cb['resource_actions']
         custom_button.update_attributes!(cb) unless !custom_button.nil?
-       # puts "Updated custom button [#{cb['name']}]"
-       # puts custom_button.inspect
+        # puts "Updated custom button [#{cb['name']}]"
+        # puts custom_button.inspect
         custom_button.save!
         parent.add_member(custom_button) if parent.respond_to?(:add_member)
         custom_buttons[count] = custom_button
