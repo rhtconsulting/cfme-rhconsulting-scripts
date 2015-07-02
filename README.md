@@ -13,6 +13,7 @@ These scripts are useful to import/export specific items
 == Example Exports
 ----
 BUILDDIR=/tmp/CFME-build
+DOMAIN_EXPORT=YourDomainHere
 
 rm -fR ${BUILDDIR}
 mkdir -p ${BUILDDIR}
@@ -23,11 +24,14 @@ bin/rake rhconsultingialogs:export[${BUILDDIR}/dialogs]
 bin/rake rhconsulting:roles:export[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:export[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:export[${BUILDDIR}/buttons/buttons.yml]
+bin/rake rhconsulting:customization_templates:export[${BUILDDIR}/customization_templates/customization_templates.yml]
+bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_EXPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
 
 == Example Imports
 ----
 BUILDDIR=/tmp/CFME-build
+DOMAIN_IMPORT=YourDomainHere
 
 cd /var/www/miq/vmdb
 bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
@@ -35,6 +39,8 @@ bin/rake rhconsultingialogs:import[${BUILDDIR}/dialogs]
 bin/rake rhconsulting:roles:import[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:import[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
+bin/rake rhconsulting:customization_templates:import[${BUILDDIR}/customization_templates/customization_templates.yml]
+bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
 ### Contribution guidelines ###
 
@@ -44,3 +50,4 @@ bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
 
 ### Who do I talk to? ###
 * Jose Simonelli (jose@redhat.com)
+* George Goh (george.goh@redhat.com)
