@@ -50,4 +50,5 @@ bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq
 
 ### Who do I talk to? ###
 * Jose Simonelli (jose@redhat.com)
+* Lester Claudio (claudiol@redhat.com)
 * George Goh (george.goh@redhat.com)
