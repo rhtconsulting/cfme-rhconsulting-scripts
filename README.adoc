@@ -38,3 +38,14 @@ bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
 bin/rake rhconsulting:customization_templates:import[${BUILDDIR}/customization_templates/customization_templates.yml]
 bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
+
+== Contribution guidelines ###
+* Writing tests
+* Code review
+* Other guidelines
+
+== Who do I talk to? ###
+* Jose Simonelli (jose@redhat.com)
+* Lester Claudio (claudiol@redhat.com)
+* George Goh (george.goh@redhat.com)
+
