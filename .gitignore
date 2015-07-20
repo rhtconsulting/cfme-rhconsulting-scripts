@@ -31,4 +31,5 @@ doc/
 *#
 .#*
 
-
+# Build artifact
+cfme-rhconsulting-scripts
