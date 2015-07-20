@@ -4,4 +4,4 @@ BUILD_DIR := $(shell rpmbuild -E %{_builddir})/cfme-rhconsulting-scripts-$(VERSI
 rpm:
 	mkdir -p $(BUILD_DIR)
 	git archive $(VERSION) | tar -x -C $(BUILD_DIR)
-	rpmbuild -bb cloudforms-util.spec
+	rpmbuild -bb cfme-rhconsulting-scripts.spec
