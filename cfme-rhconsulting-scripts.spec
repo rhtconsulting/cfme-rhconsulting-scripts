@@ -6,7 +6,7 @@ Summary:   Red Hat Consulting Scripts for CloudForms
 Group:     Applications/System
 License:   GPLv3+
 URL:       https://github.com/jsimonelli/%{name}
-Source0:   https://github.com/jsimonelli/%{name}/archive/%{version}.tar.gz
+Source:    %{name}-%{version}-%{release}.tar.gz
 
 BuildArch: noarch
 
@@ -14,19 +14,14 @@ BuildArch: noarch
 These scripts are useful to import/export specific items.
 
 %prep
+%autosetup -n %{name}
 
 %build
 
 %install
-mkdir -p "%{buildroot}/etc/profile.d"
-mkdir "%{buildroot}/root"
+mkdir -p "%{buildroot}/var/www/miq/vmdb/lib/tasks"
 cd %{_builddir}/%{name}-%{version}
-RAKEFILES=(rhconsulting_buttons.rake rhconsulting_miq_ae_datastore.rake \
-rhconsulting_tags.rake rhconsulting_customization_templates.rake \
-rhconsulting_roles.rake rhconsulting_dialogs.rake rhconsulting_service_catalogs.rake)
-for f in $RAKEFILES; do
-install --backup --mode=0644 $f "%{buildroot}/var/www/miq/vmdb/lib/tasks/$f"
-done
+install --backup --mode=0644 -t "%{buildroot}/var/www/miq/vmdb/lib/tasks/$f" *.rake
 
 %files
 %doc
