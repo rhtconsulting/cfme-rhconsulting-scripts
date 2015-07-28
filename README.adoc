@@ -3,8 +3,32 @@
 These scripts are useful to import/export specific items
 
 == Install
-* Copy the .rake files to /var/www/miq/vmdb/lib/tasks
 
+Option 1) use make commands
+* Get latest files from github
+----
+rm -fR cfme-rhconsulting-scripts/
+git clone https://github.com/jsimonelli/cfme-rhconsulting-scripts.git
+----
+
+* Install files to /var/www/miq/vmdb/lib/tasks
+----
+cd cfme-rhconsulting-scripts/
+make install
+----
+
+* Clean install (Removes the files before installing)
+----
+cd cfme-rhconsulting-scripts/
+make clean-install
+----
+
+Option 2) Copy files manually
+* Copy the .rake files to /var/www/miq/vmdb/lib/tasks
+----
+cd cfme-rhconsulting-scripts/
+cp *.rake /var/www/miq/vmdb/lib/tasks/
+----
 
 == Example Exports
 ----
