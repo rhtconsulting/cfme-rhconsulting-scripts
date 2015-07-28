@@ -4,7 +4,8 @@ These scripts are useful to import/export specific items
 
 == Install
 
-Option 1) use make commands
+Option 1) use make commands    
+
 * Get latest files from github
 ----
 rm -fR cfme-rhconsulting-scripts/
