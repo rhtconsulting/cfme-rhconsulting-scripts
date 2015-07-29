@@ -10,7 +10,7 @@ class ButtonsImportExport
 
   def export(filename)
     raise "Must supply filename" if filename.blank?
-    custom_buttons_sets_hash = export_custom_button_sets(CustomButtonSet.in_region(MiqRegion.my_region_number))
+    custom_buttons_sets_hash = export_custom_button_sets(CustomButtonSet.in_region(MiqRegion.my_region_number).order(:id).all)
     custom_button_find = CustomButton.in_region(MiqRegion.my_region_number).order(:id).all
     bf_array = []
     custom_button_find.each do |bf|
