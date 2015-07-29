@@ -27,8 +27,8 @@ class ServiceCatalogsImportExport
 
   def export(filedir)
     raise "Must supply filedir" if filedir.blank?
-    catalogs_hash = export_service_template_catalogs(ServiceTemplateCatalog.in_region(MiqRegion.my_region_number))
-    templates_hash = export_service_templates(ServiceTemplate.in_region(MiqRegion.my_region_number))
+    catalogs_hash = export_service_template_catalogs(ServiceTemplateCatalog.in_region(MiqRegion.my_region_number).order(:id).all)
+    templates_hash = export_service_templates(ServiceTemplate.in_region(MiqRegion.my_region_number).order(:id).all)
     catalogs_hash.each {|catalog|
       output = {}
       catalog_name = catalog['name']

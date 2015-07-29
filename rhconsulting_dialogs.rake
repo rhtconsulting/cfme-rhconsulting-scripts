@@ -3,7 +3,7 @@ class DialogImportExport
 
   def export(filedir)
     raise "Must supply filedir" if filedir.blank?
-    dialogs_hash = export_dialogs(Dialog.all)
+    dialogs_hash = export_dialogs(Dialog.order(:id).all)
     dialogs_hash.each { |x|
       data = []
       data << x

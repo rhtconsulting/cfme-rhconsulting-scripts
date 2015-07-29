@@ -9,7 +9,7 @@ class RoleImportExport
 
   def export(filename)
     raise "Must supply filename" if filename.blank?
-    roles_hash = export_roles(MiqUserRole.all)
+    roles_hash = export_roles(MiqUserRole.order(:id).all)
     File.write(filename, roles_hash.to_yaml)
   end
 

@@ -11,7 +11,7 @@ class CustomizationTemplateImportExport
 
   def export(filename)
     raise "Must supply filename" if filename.blank?
-    customization_templates_hash = export_customization_templates(CustomizationTemplate.where("system is not true"))
+    customization_templates_hash = export_customization_templates(CustomizationTemplate.where("system is not true").order(:id).all)
     File.write(filename, customization_templates_hash.to_yaml)
   end
 
