@@ -6,7 +6,7 @@ class MiqAeDatastoreImportExport
   def import(domain_name, import_dir)
     raise "Must supply domain name" if domain_name.blank?
     raise "Must supply import source directory" if import_dir.blank?
-    importer = MiqAeYamlImportFs.new(domain_name, {'import_dir' => import_dir})
+    importer = MiqAeYamlImportFs.new(domain_name, {'import_dir' => import_dir, 'enabled' => true})
     importer.import
   end
 
