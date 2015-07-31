@@ -9,7 +9,7 @@ Option 1) use make commands
 * Get latest files from github
 ----
 rm -fR cfme-rhconsulting-scripts/
-git clone https://github.com/jsimonelli/cfme-rhconsulting-scripts.git
+git clone https://github.com/rhtconsulting/cfme-rhconsulting-scripts.git
 ----
 
 * Install files to /var/www/miq/vmdb/lib/tasks
