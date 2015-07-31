@@ -15,17 +15,17 @@ class ButtonsImportExport
     bf_array = []
     custom_button_find.each do |bf|
       if bf['applies_to_class'] != "ServiceTemplate"
-        puts bf.inspect
+        #puts bf.inspect
         bf_array << bf
       end
     end
     custom_buttons_hash = export_custom_buttons(bf_array)
 
 #      custom_buttons_hash = export_custom_buttons(CustomButton.in_region(MiqRegion.my_region_number))
-    puts custom_buttons_sets_hash.inspect
+#puts custom_buttons_sets_hash.inspect
 #puts custom_buttons_hash.inspect
 #File.write(filename, {:custom_buttons_sets => custom_buttons_sets_hash, :custom_buttons => custom_buttons_hash}.to_yaml)
-    puts "Filename: #{filename}"
+#puts "Filename: #{filename}"
     File.write(filename, {:custom_buttons_sets => custom_buttons_sets_hash}.to_yaml)
   end
 
@@ -58,7 +58,7 @@ class ButtonsImportExport
       end
     end
 
-    puts "ResourceActions PRE: #{resource_action.inspect}"
+    #puts "ResourceActions PRE: #{resource_action.inspect}"
     ra = {}
     ra['action'] = resource_actions['action']
     ra['resource_id'] = custom_button.id
@@ -69,39 +69,39 @@ class ButtonsImportExport
     ra['ae_message'] = resource_actions['ae_message']
     ra['ae_attributes'] = resource_actions['ae_attributes']
     dialog_label = resource_actions['dialog_label']
-    puts "dialog_label: #{dialog_label.inspect}"
+    #puts "dialog_label: #{dialog_label.inspect}"
     unless dialog_label.nil?
       dialog = Dialog.in_region(MiqRegion.my_region_number).find_by_label(dialog_label)
-      puts "dialog: #{dialog.inspect}"
+      #puts "dialog: #{dialog.inspect}"
       raise "Unable to locate dialog: [#{dialog_label}]" unless dialog
       ra['dialog_id'] = dialog.id
     end
     resource_action.update_attributes!(ra)
     resource_action.reload
     resource_action.save!
-    puts "ResourceActions POST: #{resource_action.inspect}"
+    #puts "ResourceActions POST: #{resource_action.inspect}"
   end
 
   def import_custom_buttons(custom_buttons, cbs, parent)
-    puts "ParentID: #{parent['id'].inspect}"
+    #puts "ParentID: #{parent['id'].inspect}"
     count = 0
     custom_buttons.each do |cb|
       resource_actions = cb['resource_actions']
-      puts cb['resource_actions'].inspect
+      #puts cb['resource_actions'].inspect
       cb.delete('resource_actions')
       custom_button = CustomButton.in_region(MiqRegion.my_region_number).find_by_name(cb['name'])
-#      custom_button = cb.custom_buttons.find { |x| x.name == cb['name'] }
+      #      custom_button = cb.custom_buttons.find { |x| x.name == cb['name'] }
       custom_button = CustomButton.new(:applies_to_id => "#{parent['id']}") unless custom_button
-      puts "CustomButton search: #{custom_button.inspect}"
-#cb['resource_actions'] = ra
-      puts "After Import"
-      puts cb.inspect
-      puts "After Import"
-#  button['resource_actions'] = ra
-#puts "button: #{button.inspect}"
+      #puts "CustomButton search: #{custom_button.inspect}"
+      #cb['resource_actions'] = ra
+      #puts "After Import"
+      #puts cb.inspect
+      #puts "After Import"
+      #  button['resource_actions'] = ra
+      #puts "button: #{button.inspect}"
       if !custom_button.nil?
-        puts "Updating custom button [#{cb['name']}]"
-        puts cb.inspect
+        #puts "Updating custom button [#{cb['name']}]"
+        #puts cb.inspect
         custom_button['name'] = cb['name']
         custom_button['description'] = cb['description']
         custom_button['applies_to_class'] = cb['applies_to_class']
@@ -119,8 +119,8 @@ class ButtonsImportExport
         parent.add_member(custom_button) if parent.respond_to?(:add_member)
         custom_buttons[count] = custom_button
         count += 1
-        puts custom_buttons.inspect
-        puts resource_actions.inspect
+        #puts custom_buttons.inspect
+        #puts resource_actions.inspect
         import_resource_actions(custom_button, resource_actions, custom_buttons)
       end
     end
@@ -131,7 +131,7 @@ class ButtonsImportExport
     custom_button_sets.each do |cbs|
       puts "Button Group: [#{cbs['name'].split('|').first}]"
 
-      puts cbs.inspect
+      #puts cbs.inspect
       custom_button_set = CustomButtonSet.in_region(MiqRegion.my_region_number).find_by_name(cbs['name'])
       custom_button_set = CustomButtonSet.new unless custom_button_set
 
@@ -151,9 +151,9 @@ class ButtonsImportExport
       child_button = custom_button_set.custom_buttons.find { |x| x.name == name }
       child_button.id if child_button
     end.compact
-    puts custom_button_set.inspect
+    #puts custom_button_set.inspect
     set_data[:applies_to_class] = cbs['name'].split('|').second
-#    set_data[:applies_to_id] = custom_button_set.id
+    #    set_data[:applies_to_id] = custom_button_set.id
     custom_button_set.set_data = set_data
   end
 
@@ -195,7 +195,7 @@ class ButtonsImportExport
     attributes = {}
     # Added a check here
     if !resource_actions.nil?
-      puts resource_actions.inspect
+      #puts resource_actions.inspect
       attributes['action'] = resource_actions['action']
       attributes['ae_namespace'] = resource_actions['ae_namespace']
       attributes['ae_class'] = resource_actions['ae_class']
