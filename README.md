@@ -16,7 +16,7 @@ BUILDDIR=/tmp/CFME-build
 DOMAIN_EXPORT=YourDomainHere
 
 rm -fR ${BUILDDIR}
-mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates}
+mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,miq_ae_datastore}
 
 cd /var/www/miq/vmdb
 bin/rake rhconsulting:service_catalogs:export[${BUILDDIR}/service_catalogs]
