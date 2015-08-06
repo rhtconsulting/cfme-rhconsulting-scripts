@@ -89,7 +89,11 @@ class ButtonsImportExport
       resource_actions = cb['resource_actions']
       #puts cb['resource_actions'].inspect
       cb.delete('resource_actions')
-      custom_button = CustomButton.in_region(MiqRegion.my_region_number).find_by_name(cb['name'])
+      # The same name can be used in different Object Types so we need to make
+      # sure to check for that.
+      custom_button = CustomButton.in_region(MiqRegion.my_region_number).
+                        find_by_name_and_applies_to_class(cb['name'],
+                                                          cb['applies_to_class'])
       #      custom_button = cb.custom_buttons.find { |x| x.name == cb['name'] }
       custom_button = CustomButton.new(:applies_to_id => "#{parent['id']}") unless custom_button
       #puts "CustomButton search: #{custom_button.inspect}"
