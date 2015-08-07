@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+require 'thor'
+require 'rake'
+
+class MiqImportCLI < Thor
+    desc 'domain <name> <importdir>', 'import a domain from a directory.'
+    long_desc <<-LONGDESC
+      Import a domain into the Automate Engine Datastore from the
+      directory specified by the 'importdir' argument.
+    LONGDESC
+    def domain(name, importdir)
+        puts "importing #{name} from #{importdir}"
+	saved_wd = Dir.pwd
+	Dir.chdir('/var/www/miq/vmdb')
+	rake = Rake.application
+	rake.init
+	rake.add_import('/var/www/miq/vmdb/lib/tasks/rhconsulting_miq_ae_datastore.rake')
+	rake.load_rakefile
+	rake['rhconsulting:miq_ae_datastore:import'].invoke(name, importdir)
+	Dir.chdir(saved_wd)
+    end
+end
+
+MiqImportCLI.start(ARGV)

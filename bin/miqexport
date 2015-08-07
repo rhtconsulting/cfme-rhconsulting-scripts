@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+require 'thor'
+require 'rake'
+
+class MiqExportCLI < Thor
+    desc 'domain <name> <exportdir>', 'export a domain to a directory.'
+    long_desc <<-LONGDESC
+      Export a domain from the Automate Engine Datastore into the
+      directory specified by the 'exportdir' argument.
+    LONGDESC
+    def domain(name, exportdir)
+        puts "exporting #{name} to #{exportdir}"
+	saved_wd = Dir.pwd
+	Dir.chdir('/var/www/miq/vmdb')
+	rake = Rake.application
+	rake.init
+	rake.add_import('/var/www/miq/vmdb/lib/tasks/rhconsulting_miq_ae_datastore.rake')
+	rake.load_rakefile
+	rake['rhconsulting:miq_ae_datastore:export'].invoke(name, exportdir)
+	Dir.chdir(saved_wd)
+    end
+end
+
+MiqExportCLI.start(ARGV)
