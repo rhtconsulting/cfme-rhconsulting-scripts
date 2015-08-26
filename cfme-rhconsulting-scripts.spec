@@ -1,6 +1,6 @@
 Name:      cfme-rhconsulting-scripts
 Version:   0.1
-Release:   1
+Release:   2
 Summary:   Red Hat Consulting Scripts for CloudForms
 
 Group:     Applications/System
@@ -20,7 +20,7 @@ These scripts are useful to import/export specific items.
 
 %install
 mkdir -p "%{buildroot}/var/www/miq/vmdb/lib/tasks"
-cd %{_builddir}/%{name}-%{version}
+cd %{_builddir}/%{name}
 install --backup --mode=0644 -t "%{buildroot}/var/www/miq/vmdb/lib/tasks/$f" *.rake
 
 %files
@@ -36,6 +36,9 @@ install --backup --mode=0644 -t "%{buildroot}/var/www/miq/vmdb/lib/tasks/$f" *.r
 %post
 
 %changelog
+* Wed Aug 26 2015 George Goh <george.goh@redhat.com> 0.1-2
+- Bump release version
+
 * Mon Jul 20 2015 George Goh <george.goh@redhat.com> 0.1-1
 - Initial RPM release
 
