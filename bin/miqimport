@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+
+op_domain () {
+  DOMAIN_NAME=$1
+  IMPORT_DIR=$2
+
+  if [ ! -d $IMPORT_DIR ]
+  then
+    echo "Import directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_NAME}, ${IMPORT_DIR}]"
+  popd
+}
+
+op_dialogs () {
+  IMPORT_DIR=$1
+
+  if [ ! -d $IMPORT_DIR ]
+  then
+    echo "Import directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:dialogs:import[${IMPORT_DIR}]"
+  popd
+}
+
+op_service_catalogs () {
+  IMPORT_DIR=$1
+
+  if [ ! -d $IMPORT_DIR ]
+  then
+    echo "Import directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:service_catalogs:import[${IMPORT_DIR}]"
+  popd
+}
+
+op_roles () {
+  IMPORT_FILE=$1
+
+  if [ ! -f $IMPORT_FILE ]
+  then
+    echo "Import file doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:roles:import[${IMPORT_FILE}]"
+  popd
+}
+
+op_tags () {
+  IMPORT_FILE=$1
+
+  if [ ! -d $IMPORT_FILE ]
+  then
+    echo "Import file doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:tags:import[${IMPORT_FILE}]"
+  popd
+}
+
+op_buttons () {
+  IMPORT_FILE=$1
+
+  if [ ! -d $IMPORT_FILE ]
+  then
+    echo "Import file doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:buttons:import[${IMPORT_FILE}]"
+  popd
+}
+
+op_customization_templates () {
+  IMPORT_FILE=$1
+
+  if [ ! -d $IMPORT_FILE ]
+  then
+    echo "Import file doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:customization_templates:import[${IMPORT_FILE}]"
+  popd
+}
+
+contains () {
+  SEARCH_TERM=$1
+  shift
+  LIST=$@
+
+  for element in $LIST; do
+    if [[ "$SEARCH_TERM" == "$element" ]]; then
+      return 0
+    fi
+  done
+
+  return 1  
+}
+
+parse_action () {
+  AVAILABLE_PARSERS=`compgen -A function | grep '^op_'`
+
+  op_func="op_$1"
+  contains $op_func $AVAILABLE_PARSERS; VALID_OP=$?
+
+  if [ $VALID_OP -eq 0 ]
+  then
+    shift
+    $op_func $@
+  else
+    usage
+  fi
+}
+
+usage () {
+progname=`basename $0`
+
+  cat << EOF
+Usage: $progname <object_type> <additional_params> <importsource>
+
+This command imports the specified object type from the <importsource>,
+which may be a file or directory.
+
+<additional_params> may be required depending on the type of object to be
+imported.
+
+Available Object Types:
+  dialogs                          Import service dialogs.
+  service_catalogs                 Import service catalogs.
+  roles                            Import user roles.
+  tags                             Import tags.
+  buttons                          Import buttons.
+  customization_templates          Import customization templates.
+  domain <name>                    Import the specified domain from the
+                                   Automate Engine Datastore. <name> MUST
+                                   be specified.
+
+Report bugs and feature requests to
+https://github.com/rhtconsulting/cfme-rhconsulting-scripts
+
+EOF
+
+}
+
+parse_action "$@"
+
