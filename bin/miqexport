@@ -1,24 +1,182 @@
-#!/usr/bin/env ruby
-require 'thor'
-require 'rake'
+#!/usr/bin/env bash
 
-class MiqExportCLI < Thor
-    desc 'domain <name> <exportdir>', 'export a domain to a directory.'
-    long_desc <<-LONGDESC
-      Export a domain from the Automate Engine Datastore into the
-      directory specified by the 'exportdir' argument.
-    LONGDESC
-    def domain(name, exportdir)
-        puts "exporting #{name} to #{exportdir}"
-	saved_wd = Dir.pwd
-	Dir.chdir('/var/www/miq/vmdb')
-	rake = Rake.application
-	rake.init
-	rake.add_import('/var/www/miq/vmdb/lib/tasks/rhconsulting_miq_ae_datastore.rake')
-	rake.load_rakefile
-	rake['rhconsulting:miq_ae_datastore:export'].invoke(name, exportdir)
-	Dir.chdir(saved_wd)
-    end
-end
+op_domain () {
+  DOMAIN_NAME=$1
+  EXPORT_DIR=$2
 
-MiqExportCLI.start(ARGV)
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_NAME}, ${EXPORT_DIR}]"
+  popd
+}
+
+op_dialogs () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:dialogs:export[${EXPORT_DIR}]"
+  popd
+}
+
+op_service_catalogs () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:service_catalogs:export[${EXPORT_DIR}]"
+  popd
+}
+
+op_roles () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:roles:export[${EXPORT_DIR}/roles.yml]"
+  popd
+}
+
+op_tags () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:tags:export[${EXPORT_DIR}/tags.yml]"
+  popd
+}
+
+op_buttons () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:buttons:export[${EXPORT_DIR}/buttons.yml]"
+  popd
+}
+
+op_customization_templates () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:customization_templates:export[${EXPORT_DIR}/customization_templates.yml]"
+  popd
+}
+
+op_b () {
+  while getopts ":ab:" opt; do
+    case $opt in
+      a)
+        echo "-a was triggered!" >&2
+        ;;
+      b)
+        echo "-b was triggered!" >&2
+        echo $OPTARG
+        ;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2
+        ;;
+      :)
+        echo "Option -$OPTARG requres an argument." >&2
+        exit 1
+        ;;
+    esac
+  done
+}
+
+contains () {
+  SEARCH_TERM=$1
+  shift
+  LIST=$@
+
+  for element in $LIST; do
+    if [[ "$SEARCH_TERM" == "$element" ]]; then
+      return 0
+    fi
+  done
+
+  return 1  
+}
+
+parse_action () {
+  AVAILABLE_PARSERS=`compgen -A function | grep '^op_'`
+
+  op_func="op_$1"
+  contains $op_func $AVAILABLE_PARSERS; VALID_OP=$?
+
+  if [ $VALID_OP -eq 0 ]
+  then
+    shift
+    $op_func $@
+  else
+    usage
+  fi
+}
+
+usage () {
+progname=`basename $0`
+
+  cat << EOF
+Usage: $progname <object_type> <additional_params> <exportdir>
+
+This command exports the specified object type into the <exportdir> directory.
+
+<additional_params> may be required depending on the type of object to be
+exported.
+
+Available Object Types:
+  dialogs                          Export service dialogs.
+  service_catalogs                 Export service catalogs.
+  roles                            Export user roles.
+  tags                             Export tags.
+  buttons                          Export buttons.
+  customization_templates          Export customization templates.
+  domain <name>                    Export the specified domain from the
+                                   Automate Engine Datastore. <name> MUST
+                                   be specified.
+
+Report bugs and feature requests to
+https://github.com/rhtconsulting/cfme-rhconsulting-scripts
+
+EOF
+
+}
+
+parse_action "$@"
+
