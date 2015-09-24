@@ -44,58 +44,58 @@ op_service_catalogs () {
 }
 
 op_roles () {
-  EXPORT_DIR=$1
+  EXPORT_FILE=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d `dirname $EXPORT_FILE` ]
   then
     echo "Export directory doesn't exist!"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:roles:export[${EXPORT_DIR}/roles.yml]"
+  bin/rake "rhconsulting:roles:export[${EXPORT_FILE}]"
   popd
 }
 
 op_tags () {
-  EXPORT_DIR=$1
+  EXPORT_FILE=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d `dirname $EXPORT_FILE` ]
   then
     echo "Export directory doesn't exist!"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:tags:export[${EXPORT_DIR}/tags.yml]"
+  bin/rake "rhconsulting:tags:export[${EXPORT_FILE}]"
   popd
 }
 
 op_buttons () {
-  EXPORT_DIR=$1
+  EXPORT_FILE=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d `dirname $EXPORT_FILE` ]
   then
     echo "Export directory doesn't exist!"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:buttons:export[${EXPORT_DIR}/buttons.yml]"
+  bin/rake "rhconsulting:buttons:export[${EXPORT_FILE}]"
   popd
 }
 
 op_customization_templates () {
-  EXPORT_DIR=$1
+  EXPORT_FILE=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d `dirname $EXPORT_FILE` ]
   then
     echo "Export directory doesn't exist!"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:customization_templates:export[${EXPORT_DIR}/customization_templates.yml]"
+  bin/rake "rhconsulting:customization_templates:export[${EXPORT_FILE}]"
   popd
 }
 
@@ -132,9 +132,10 @@ usage () {
 progname=`basename $0`
 
   cat << EOF
-Usage: $progname <object_type> <additional_params> <exportdir>
+Usage: $progname <object_type> <additional_params> <exportdest>
 
-This command exports the specified object type into the <exportdir> directory.
+This command exports the specified object type into the <exportdest>,
+which may be a file or directory.
 
 <additional_params> may be required depending on the type of object to be
 exported.
