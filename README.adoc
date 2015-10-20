@@ -55,8 +55,8 @@ BUILDDIR=/tmp/CFME-build
 DOMAIN_IMPORT=YourDomainHere
 
 cd /var/www/miq/vmdb
-bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
 bin/rake rhconsulting:dialogs:import[${BUILDDIR}/dialogs]
+bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
 bin/rake rhconsulting:roles:import[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:import[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
