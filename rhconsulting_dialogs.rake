@@ -58,9 +58,15 @@ class DialogImportExport
 
   def import_dialog_fields(dialog_group)
     dialog_group["dialog_fields"].collect do |dialog_field|
-      df = dialog_field['type'].constantize.create(dialog_field.reject { |a| ['resource_action_fqname'].include?(a) })
-      unless dialog_field['resource_action_fqname'].blank?
-        df.resource_action.fqname = dialog_field['resource_action_fqname']
+      df = dialog_field['type'].constantize.create(dialog_field.reject { |a| ['resource_action'].include?(a) })
+      unless dialog_field['resource_action'].blank?
+        df.resource_action.action = dialog_field['resource_action']['action']
+        df.resource_action.resource_type = dialog_field['resource_action']['resource_type']
+        df.resource_action.ae_namespace = dialog_field['resource_action']['ae_namespace']
+        df.resource_action.ae_class = dialog_field['resource_action']['ae_class']
+        df.resource_action.ae_instance = dialog_field['resource_action']['ae_instance']
+        df.resource_action.ae_message = dialog_field['resource_action']['ae_message']
+        df.resource_action.ae_attributes = dialog_field['resource_action']['ae_attributes']
         df.resource_action.save!
       end
       df
@@ -83,7 +89,14 @@ class DialogImportExport
     dialog_fields.map do |dialog_field|
       field_attributes = included_attributes(dialog_field.attributes, ["created_at", "dialog_group_id", "id", "updated_at"])
       if dialog_field.respond_to?(:resource_action) && dialog_field.resource_action
-        field_attributes["resource_action_fqname"] = dialog_field.resource_action.fqname
+        field_attributes["resource_action"] = {}
+        field_attributes["resource_action"]["action"] = dialog_field.resource_action.action
+        field_attributes["resource_action"]["resource_type"] = dialog_field.resource_action.resource_type
+        field_attributes["resource_action"]["ae_namespace"] = dialog_field.resource_action.ae_namespace
+        field_attributes["resource_action"]["ae_class"] = dialog_field.resource_action.ae_class
+        field_attributes["resource_action"]["ae_instance"] = dialog_field.resource_action.ae_instance
+        field_attributes["resource_action"]["ae_message"] = dialog_field.resource_action.ae_message
+        field_attributes["resource_action"]["ae_attributes"] = dialog_field.resource_action.ae_attributes
       end
       field_attributes
     end
