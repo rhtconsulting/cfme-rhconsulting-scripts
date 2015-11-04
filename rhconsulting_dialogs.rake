@@ -66,6 +66,7 @@ class DialogImportExport
       # This is the old export format that only compatible with the export script
       unless dialog_field['resource_action_fqname'].blank?
         df.resource_action.fqname = dialog_field['resource_action_fqname']
+        df.resource_action.save!
       end
 
       # This is the new format that is compatible with the export script and Web UI
