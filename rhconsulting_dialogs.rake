@@ -58,7 +58,18 @@ class DialogImportExport
 
   def import_dialog_fields(dialog_group)
     dialog_group["dialog_fields"].collect do |dialog_field|
-      df = dialog_field['type'].constantize.create(dialog_field.reject { |a| ['resource_action'].include?(a) })
+
+      # Allow for importing the old format or the new format
+      # This will allow for compatibility of exports in both formats
+      df = dialog_field['type'].constantize.create(dialog_field.reject { |a| ['resource_action'].include?(a) || ['resource_action_fqname'].include?(a) })
+
+      # This is the old export format that only compatible with the export script
+      unless dialog_field['resource_action_fqname'].blank?
+        df.resource_action.fqname = dialog_field['resource_action_fqname']
+        df.resource_action.save!
+      end
+
+      # This is the new format that is compatible with the export script and Web UI
       unless dialog_field['resource_action'].blank?
         df.resource_action.action = dialog_field['resource_action']['action']
         df.resource_action.resource_type = dialog_field['resource_action']['resource_type']
