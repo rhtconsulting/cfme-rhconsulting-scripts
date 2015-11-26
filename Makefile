@@ -11,6 +11,7 @@ rm-installed-files:
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_roles.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_service_catalogs.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_tags.rake
+	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_reports.rake
 	rm -f /usr/bin/miqexport
 	rm -f /usr/bin/miqimport
 
@@ -22,6 +23,7 @@ install:
 	install -Dm644 rhconsulting_roles.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_roles.rake
 	install -Dm644 rhconsulting_service_catalogs.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_service_catalogs.rake
 	install -Dm644 rhconsulting_tags.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_tags.rake
+	install -Dm644 rhconsulting_tags.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_reports.rake
 	install -Dm755 bin/miqexport /usr/bin/miqexport
 	install -Dm755 bin/miqimport /usr/bin/miqimport
 
@@ -34,8 +36,9 @@ rpm:
 	rm -rf cfme-consulting-scripts && \
 	mkdir -p cfme-rhconsulting-scripts && \
 	cp *.rake cfme-rhconsulting-scripts && \
+	cp bin/* cfme-rhconsulting-scripts && \
 	tar zcf "$(TARBALL)" cfme-rhconsulting-scripts && \
-	rm -rf cfme-consulting-scripts && \
+	rm -rf cfme-rhconsulting-scripts && \
 	rpmbuild -bb cfme-rhconsulting-scripts.spec
 
 clean:
