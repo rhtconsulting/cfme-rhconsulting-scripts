@@ -35,7 +35,69 @@ cd cfme-rhconsulting-scripts/
 cp *.rake /var/www/miq/vmdb/lib/tasks/
 ----
 
-== Example Exports
+== Export command
+----
+Usage: miqexport <object_type> <additional_params> <exportdest>
+
+This command exports the specified object type into the <exportdest>,
+which may be a file or directory.
+
+<additional_params> may be required depending on the type of object to be
+exported.
+
+Available Object Types:
+  dialogs                          Export service dialogs.
+  service_catalogs                 Export service catalogs.
+  roles                            Export user roles.
+  tags                             Export tags.
+  buttons                          Export buttons.
+  customization_templates          Export customization templates.
+  domain <name>                    Export the specified domain from the
+                                   Automate Engine Datastore. <name> MUST
+                                   be specified.
+----
+
+== Example exports
+----
+# export the 'MyCustomDomain' to /tmp, i.e., /tmp/MyCustomDomain
+miqexport domain MyCustomDomain /tmp
+
+# export dialogs to /tmp/dialogs
+miqexport dialogs /tmp/dialogs
+----
+
+== Import Command
+----
+Usage: miqimport <object_type> <additional_params> <importsource>
+
+This command imports the specified object type from the <importsource>,
+which may be a file or directory.
+
+<additional_params> may be required depending on the type of object to be
+imported.
+
+Available Object Types:
+  dialogs                          Import service dialogs.
+  service_catalogs                 Import service catalogs.
+  roles                            Import user roles.
+  tags                             Import tags.
+  buttons                          Import buttons.
+  customization_templates          Import customization templates.
+  domain <name>                    Import the specified domain from the
+                                   <importsource> directory. <name> MUST
+                                   be specified.
+----
+
+== Example Imports
+----
+# import 'MyCustomDomain' from /tmp, i.e., /tmp/MyCustomDomain
+miqimport domain MyCustomDomain /tmp
+
+# import dialogs from /tmp/dialogs
+miqimport dialogs /tmp/dialogs
+----
+
+== Export examples using rake
 ----
 BUILDDIR=/tmp/CFME-build
 DOMAIN_EXPORT=YourDomainHere
@@ -53,7 +115,7 @@ bin/rake rhconsulting:customization_templates:export[${BUILDDIR}/customization_t
 bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_EXPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
 
-== Example Imports
+== Import examples using rake
 ----
 BUILDDIR=/tmp/CFME-build
 DOMAIN_IMPORT=YourDomainHere
@@ -68,12 +130,12 @@ bin/rake rhconsulting:customization_templates:import[${BUILDDIR}/customization_t
 bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
 
-== Contribution guidelines ###
+== Contribution guidelines
 * Writing tests
 * Code review
 * Other guidelines
 
-== Who do I talk to? ###
+== Who do I talk to?
 * Jose Simonelli (jose@redhat.com)
 * Lester Claudio (claudiol@redhat.com)
 * George Goh (george.goh@redhat.com)
