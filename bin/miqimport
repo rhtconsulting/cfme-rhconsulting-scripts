@@ -148,7 +148,7 @@ Available Object Types:
   buttons                          Import buttons.
   customization_templates          Import customization templates.
   domain <name>                    Import the specified domain from the
-                                   Automate Engine Datastore. <name> MUST
+                                   <importsource> directory. <name> MUST
                                    be specified.
 
 Report bugs and feature requests to
