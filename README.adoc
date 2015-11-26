@@ -52,6 +52,7 @@ Available Object Types:
   tags                             Export tags.
   buttons                          Export buttons.
   customization_templates          Export customization templates.
+  reports                          Export custom reports.
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
@@ -83,6 +84,7 @@ Available Object Types:
   tags                             Import tags.
   buttons                          Import buttons.
   customization_templates          Import customization templates.
+  reports                          Import custom reports.
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.
