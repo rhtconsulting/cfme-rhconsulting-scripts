@@ -29,6 +29,20 @@ op_reports () {
   popd
 }
 
+op_policies () {
+  IMPORT_DIR=$1
+
+  if [ ! -d $IMPORT_DIR ]
+  then
+    echo "Import directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_policies:import[${IMPORT_DIR}]"
+  popd
+}
+
 op_dialogs () {
   IMPORT_DIR=$1
 
@@ -162,6 +176,7 @@ Available Object Types:
   buttons                          Import buttons.
   customization_templates          Import customization templates.
   reports                          Import custom reports.
+  policies                         Import policies.
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.

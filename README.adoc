@@ -53,6 +53,7 @@ Available Object Types:
   buttons                          Export buttons.
   customization_templates          Export customization templates.
   reports                          Export custom reports.
+  policies                         Export policies.
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
@@ -85,6 +86,7 @@ Available Object Types:
   buttons                          Import buttons.
   customization_templates          Import customization templates.
   reports                          Import custom reports.
+  policies                         Import policies.
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.
@@ -105,7 +107,7 @@ BUILDDIR=/tmp/CFME-build
 DOMAIN_EXPORT=YourDomainHere
 
 rm -fR ${BUILDDIR}
-mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,miq_ae_datastore}
+mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,policies,miq_ae_datastore}
 
 cd /var/www/miq/vmdb
 bin/rake rhconsulting:dialogs:export[${BUILDDIR}/dialogs]
@@ -114,6 +116,7 @@ bin/rake rhconsulting:roles:export[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:export[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:export[${BUILDDIR}/buttons/buttons.yml]
 bin/rake rhconsulting:customization_templates:export[${BUILDDIR}/customization_templates/customization_templates.yml]
+bin/rake rhconsulting:miq_policies:export[${BUILDDIR/policies]
 bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_EXPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
 
@@ -129,6 +132,7 @@ bin/rake rhconsulting:roles:import[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:import[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
 bin/rake rhconsulting:customization_templates:import[${BUILDDIR}/customization_templates/customization_templates.yml]
+bin/rake rhconsulting:miq_policies:import[${BUILDDIR}/policies]
 bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
 
