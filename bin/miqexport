@@ -29,6 +29,20 @@ op_reports () {
   popd
 }
 
+op_policies () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_policies:export[${EXPORT_DIR}]"
+  popd
+}
+
 op_dialogs () {
   EXPORT_DIR=$1
 
@@ -162,6 +176,7 @@ Available Object Types:
   buttons                          Export buttons.
   customization_templates          Export customization templates.
   reports                          Export custom reports.
+  policies                         Export policies.
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.

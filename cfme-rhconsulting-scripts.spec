@@ -1,5 +1,5 @@
 Name:      cfme-rhconsulting-scripts
-Version:   0.2
+Version:   0.3
 Release:   1
 Summary:   Red Hat Consulting Scripts for CloudForms
 
@@ -23,8 +23,8 @@ mkdir -p "%{buildroot}/var/www/miq/vmdb/lib/tasks"
 mkdir -p "%{buildroot}/usr/bin"
 cd %{_builddir}/%{name}
 install --backup --mode=0644 -t "%{buildroot}/var/www/miq/vmdb/lib/tasks/$f" *.rake
-install --backup --mode=0755 -t "%{buildroot}/usr/bin" miqexport
-install --backup --mode=0755 -t "%{buildroot}/usr/bin" miqimport
+install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/miqexport
+install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/miqimport
 
 %files
 /var/www/miq/vmdb/lib/tasks/rhconsulting_buttons.rake
@@ -35,12 +35,17 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" miqimport
 /var/www/miq/vmdb/lib/tasks/rhconsulting_dialogs.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_service_catalogs.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_reports.rake
+/var/www/miq/vmdb/lib/tasks/rhconsulting_policies.rake
 /usr/bin/miqexport
 /usr/bin/miqimport
 
 %post
 
 %changelog
+* Mon Dec 14 2015 Brant Evans <brant.evans@redhat.com> 0.3-1
+- Add policy import/export
+- Adjust miqexport/miqimport path to fix RPM build errors
+
 * Thu Nov 26 2015 George Goh <george.goh@redhat.com> 0.2-1
 - Add custom report import/export
 - Add miqimport/miqexport commands
