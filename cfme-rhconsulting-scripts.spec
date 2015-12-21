@@ -1,6 +1,6 @@
 Name:      cfme-rhconsulting-scripts
 Version:   0.3
-Release:   1
+Release:   2
 Summary:   Red Hat Consulting Scripts for CloudForms
 
 Group:     Applications/System
@@ -42,6 +42,9 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/miqimport
 %post
 
 %changelog
+* Mon Dec 21 2015 George Goh <george.goh@redhat.com> 0.3-2
+- Fix wrong test in miqimport for the existence of files.
+
 * Mon Dec 14 2015 Brant Evans <brant.evans@redhat.com> 0.3-1
 - Add policy import/export
 - Adjust miqexport/miqimport path to fix RPM build errors

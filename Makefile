@@ -1,5 +1,5 @@
 VERSION := 0.3
-RELEASE := 1
+RELEASE := 2
 
 .PHONY: clean rpm install clean-install
 
