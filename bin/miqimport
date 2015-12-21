@@ -88,7 +88,7 @@ op_roles () {
 op_tags () {
   IMPORT_FILE=$1
 
-  if [ ! -d $IMPORT_FILE ]
+  if [ ! -f $IMPORT_FILE ]
   then
     echo "Import file doesn't exist!"
     exit 1
@@ -102,7 +102,7 @@ op_tags () {
 op_buttons () {
   IMPORT_FILE=$1
 
-  if [ ! -d $IMPORT_FILE ]
+  if [ ! -f $IMPORT_FILE ]
   then
     echo "Import file doesn't exist!"
     exit 1
@@ -116,7 +116,7 @@ op_buttons () {
 op_customization_templates () {
   IMPORT_FILE=$1
 
-  if [ ! -d $IMPORT_FILE ]
+  if [ ! -f $IMPORT_FILE ]
   then
     echo "Import file doesn't exist!"
     exit 1
