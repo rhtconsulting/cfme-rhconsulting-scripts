@@ -29,7 +29,7 @@ private
     MiqPolicy.all.each do |p|
       puts("Exporting Policy: #{p.description}")
 
-      File.write("#{export_dir}/Policy_#{p.description}.yaml", p.export_to_yaml)
+      File.write("#{export_dir}/Policy_#{p.description.gsub(/\//, '_')}.yaml", p.export_to_yaml)
     end
   end
 
@@ -37,7 +37,7 @@ private
     MiqPolicySet.all.each do |p|
       puts("Exporting Policy Profile: #{p.description}")
 
-      File.write("#{export_dir}/Profile_#{p.description}.yaml", p.export_to_yaml)
+      File.write("#{export_dir}/Profile_#{p.description.gsub(/\//, '_')}.yaml", p.export_to_yaml)
     end
   end
 
