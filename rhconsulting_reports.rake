@@ -22,7 +22,7 @@ class MiqReportImportExport
     raise "Must supply export dir" if export_dir.blank?
     custom_reports = MiqReport.find_all_by_rpt_type("Custom")
     custom_reports.each { |report|
-      File.write("#{export_dir}/#{report.id}_#{report.name}.yml", 
+      File.write("#{export_dir}/#{report.id}_#{report.name.gsub('/', '_')}.yml", 
                  report.export_to_array.to_yaml)
     }
   end
