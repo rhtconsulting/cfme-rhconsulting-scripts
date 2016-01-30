@@ -127,12 +127,12 @@ DOMAIN_IMPORT=YourDomainHere
 
 cd /var/www/miq/vmdb
 bin/rake rhconsulting:dialogs:import[${BUILDDIR}/dialogs]
-bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
 bin/rake rhconsulting:roles:import[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:import[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
 bin/rake rhconsulting:customization_templates:import[${BUILDDIR}/customization_templates/customization_templates.yml]
 bin/rake rhconsulting:miq_policies:import[${BUILDDIR}/policies]
+bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
 bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
 
