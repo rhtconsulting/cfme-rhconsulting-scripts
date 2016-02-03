@@ -3,10 +3,10 @@
 class MiqAeDatastoreImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
-  def import(domain_name, import_dir)
+  def import(domain_name, options)
     raise "Must supply domain name" if domain_name.blank?
-    raise "Must supply import source directory" if import_dir.blank?
-    importer = MiqAeYamlImportFs.new(domain_name, {'import_dir' => import_dir, 'enabled' => true})
+    raise "Must supply import source directory" if options['import_dir'].blank?
+    importer = MiqAeYamlImportFs.new(domain_name, options)
     importer.import
   end
 
@@ -25,11 +25,17 @@ namespace :rhconsulting do
     task :usage => [:environment] do
       puts 'Export - Usage: rake \'rhconsulting:miq_ae_datastore:export[domain_to_export, /path/to/export]\''
       puts 'Import - Usage: rake \'rhconsulting:miq_ae_datastore:import[domain_to_import, /path/to/import]\''
+      puts "Import (Disabled) - Usage: rake 'rhconsulting:miq_ae_datastore:import_disabled[domain_to_import, /path/to/import]'"
     end
 
     desc 'Import a specific AE Datastore domain from a directory'
     task :import, [:domain_name, :filename] => [:environment] do |_, arguments|
-      MiqAeDatastoreImportExport.new.import(arguments[:domain_name], arguments[:filename])
+      MiqAeDatastoreImportExport.new.import(arguments[:domain_name], 'import_dir' => arguments[:filename], 'enabled' => true)
+    end
+
+    desc 'Import a specific AE Datastore domain from a directory as disabled'
+    task :import_disabled, [:domain_name, :filename] => [:environment] do |_, arguments|
+      MiqAeDatastoreImportExport.new.import(arguments[:domain_name], 'import_dir' => arguments[:filename], 'enabled' => false)
     end
 
     desc 'Exports a specific AE Datastore domain to a directory'
