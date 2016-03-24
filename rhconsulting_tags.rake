@@ -50,7 +50,7 @@ private
 
   def import_entries(classification, entries)
     entries.each do |e|
-      puts "Tag: [#{e['name']}]"
+      #puts "Tag: [#{e['name']}]"
       entry = classification.find_entry_by_name(e['name'])
       if entry
         entry.update_attributes!(e.select { |k| UPDATE_FIELDS.include?(k) })
@@ -64,7 +64,7 @@ private
     begin
       classifications.each do |c|
         next if ['folder_path_blue', 'folder_path_yellow'].include?(c['name'])
-        puts "Classification: [#{c['name']}]"
+        #puts "Classification: [#{c['name']}]"
         classification = Classification.find_by_name(c['name'])
         entries = c.delete("entries")
         if classification
