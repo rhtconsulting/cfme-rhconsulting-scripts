@@ -86,6 +86,7 @@ class ButtonsImportExport
     #puts "ParentID: #{parent['id'].inspect}"
     count = 0
     custom_buttons.each do |cb|
+      puts "\t\tAdding Button: #{cb['name']}"
       resource_actions = cb['resource_actions']
       #puts cb['resource_actions'].inspect
       cb.delete('resource_actions')
@@ -115,7 +116,7 @@ class ButtonsImportExport
         custom_button['wait_for_complete'] = cb['wait_for_complete']
         custom_button['visibility'] = cb['visibility']
         custom_button['applies_to_id'] = cb['applies_to_id']
-        custom_button['resource_actions'] = cb['resource_actions']
+        #custom_button['resource_actions'] = cb['resource_actions']
         custom_button.update_attributes!(cb) unless !custom_button.nil?
         # puts "Updated custom button [#{cb['name']}]"
         # puts custom_button.inspect
@@ -133,7 +134,8 @@ class ButtonsImportExport
 
   def import_custom_button_sets(custom_button_sets)
     custom_button_sets.each do |cbs|
-      puts "Button Group: [#{cbs['name'].split('|').first}]"
+      puts "Button Class: [#{cbs['name'].split('|')[1]}]"
+      puts "\tButton Group: [#{cbs['name'].split('|').first}]"
 
       #puts cbs.inspect
       custom_button_set = CustomButtonSet.in_region(MiqRegion.my_region_number).find_by_name(cbs['name'])
