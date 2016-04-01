@@ -13,10 +13,16 @@ class DialogImportExport
 
   def import(filedir)
     raise "Must supply filedir" if filedir.blank?
-    Dialog.transaction do
-      Dir.foreach(filedir) do |filename|
-        next if filename == '.' or filename == '..'
-        import_dialogs_from_file("#{filedir}/#{filename}")
+    if File.file?(filedir)
+      Dialog.transaction do
+        import_dialogs_from_file("#{filedir}")
+      end
+    elsif File.directory?(filedir)
+      Dialog.transaction do
+        Dir.foreach(filedir) do |filename|
+          next if filename == '.' or filename == '..'
+          import_dialogs_from_file("#{filedir}/#{filename}")
+        end
       end
     end
   end
@@ -136,12 +142,12 @@ class DialogImportExport
 end
 
 namespace :rhconsulting do
-  namespace :dialogs do
+  namespace :service_dialogs do
 
     desc 'Usage information'
     task :usage => [:environment] do
-      puts 'Export - Usage: rake rhconsulting:dialogs:export[/path/to/dir/with/dialogs]'
-      puts 'Import - Usage: rake rhconsulting:dialogs:import[/path/to/dir/with/dialogs]'
+      puts 'Export - Usage: rake rhconsulting:service_dialogs:export[/path/to/dir/with/dialogs]'
+      puts 'Import - Usage: rake rhconsulting:service_dialogs:import[/path/to/dir/with/dialogs]'
     end
 
     desc 'Import all dialogs to individual YAML files'

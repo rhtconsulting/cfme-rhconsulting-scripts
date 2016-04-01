@@ -110,7 +110,7 @@ rm -fR ${BUILDDIR}
 mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,policies,miq_ae_datastore}
 
 cd /var/www/miq/vmdb
-bin/rake rhconsulting:dialogs:export[${BUILDDIR}/dialogs]
+bin/rake rhconsulting:service_dialogs:export[${BUILDDIR}/dialogs]
 bin/rake rhconsulting:service_catalogs:export[${BUILDDIR}/service_catalogs]
 bin/rake rhconsulting:roles:export[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:export[${BUILDDIR}/tags/tags.yml]
@@ -126,7 +126,7 @@ BUILDDIR=/tmp/CFME-build
 DOMAIN_IMPORT=YourDomainHere
 
 cd /var/www/miq/vmdb
-bin/rake rhconsulting:dialogs:import[${BUILDDIR}/dialogs]
+bin/rake rhconsulting:service_dialogs:import[${BUILDDIR}/dialogs]
 bin/rake rhconsulting:roles:import[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:import[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
@@ -134,7 +134,10 @@ bin/rake rhconsulting:customization_templates:import[${BUILDDIR}/customization_t
 bin/rake rhconsulting:miq_policies:import[${BUILDDIR}/policies]
 bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
 bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq_ae_datastore]"
+bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
 ----
+
+NOTE: Service Catalogs should be imported last as they reference Dialogs and the Automate Domain(s).
 
 == Contribution guidelines
 * Writing tests

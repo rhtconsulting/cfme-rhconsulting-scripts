@@ -53,7 +53,7 @@ op_dialogs () {
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:dialogs:export[${EXPORT_DIR}]"
+  bin/rake "rhconsulting:service_dialogs:export[${EXPORT_DIR}]"
   popd
 }
 
