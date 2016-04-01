@@ -2,25 +2,55 @@ class TagImportExport
   class ParsedNonClassificationYamlError < StandardError; end
 
   def import(filename)
-    raise "Must supply filename" if filename.blank?
-    classifications = YAML.load_file(filename)
-    Classification.transaction do
-      import_classifications(classifications)
+    raise "Must supply filename or directory" if filename.blank?
+    if File.file?(filename)
+      import_file(filename)
+    elsif File.directory?(filename)
+      Dir.glob("#{filename}/*.yaml") do |fname|
+        import_file(fname)
+      end
+    else
+      raise "Argument is not a filename or directory"
     end
   end
 
   def export(filename)
-    raise "Must supply filename" if filename.blank?
-    File.write(filename, Classification.export_to_yaml)
+    raise "Must supply filename or directory" if filename.blank?
+    if File.file?(filename)
+      File.write(filename, Classification.export_to_yaml)
+    elsif File.directory?(filename)
+      Classification.find_all_by_parent_id("0").each do |category|
+        # Skip exporting the User roles classification
+        #   as the classification does not show in the Web UI
+        next if category.description == 'User roles'
+
+        # Get the description to use in the filename
+        description = "#{category.description}"
+
+        # Replace invalid filename characters
+        description = description.gsub('/', '_')
+        description = description.gsub('|', '_')
+        fname = "#{filename}/#{description}.yaml"
+
+        File.write(fname, category.export_to_yaml)
+      end
+    end
   end
 
 private
 
   UPDATE_FIELDS = ['description', 'example_text', 'show', 'perf_by_tag']
 
+  def import_file(filename)
+    classifications = YAML.load_file(filename)
+    Classification.transaction do
+      import_classifications(classifications)
+    end
+  end
+
   def import_entries(classification, entries)
     entries.each do |e|
-      puts "Tag: [#{e['name']}]"
+      #puts "Tag: [#{e['name']}]"
       entry = classification.find_entry_by_name(e['name'])
       if entry
         entry.update_attributes!(e.select { |k| UPDATE_FIELDS.include?(k) })
@@ -34,7 +64,7 @@ private
     begin
       classifications.each do |c|
         next if ['folder_path_blue', 'folder_path_yellow'].include?(c['name'])
-        puts "Classification: [#{c['name']}]"
+        #puts "Classification: [#{c['name']}]"
         classification = Classification.find_by_name(c['name'])
         entries = c.delete("entries")
         if classification
