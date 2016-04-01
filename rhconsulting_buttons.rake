@@ -1,15 +1,20 @@
 class ButtonsImportExport
 
   def import(filename)
-    raise "Must supply filename" if filename.blank?
-    contents = YAML.load_file(filename)
-    CustomButton.transaction do
-      import_custom_button_sets(contents[:custom_buttons_sets])
+    raise "Must supply filename or directory" if filename.blank?
+    if File.file?(filename)
+      import_file(filename)
+    elsif File.directory?(filename)
+      Dir.glob("#{filename}/*.yaml") do |fname|
+        import_file(fname)
+      end
+    else
+      raise "Argument is not a filename or directory"
     end
   end
 
   def export(filename)
-    raise "Must supply filename" if filename.blank?
+    raise "Must supply filename or directory" if filename.blank?
     custom_buttons_sets_hash = export_custom_button_sets(CustomButtonSet.in_region(MiqRegion.my_region_number).order(:id).all)
     custom_button_find = CustomButton.in_region(MiqRegion.my_region_number).order(:id).all
     bf_array = []
@@ -26,10 +31,26 @@ class ButtonsImportExport
 #puts custom_buttons_hash.inspect
 #File.write(filename, {:custom_buttons_sets => custom_buttons_sets_hash, :custom_buttons => custom_buttons_hash}.to_yaml)
 #puts "Filename: #{filename}"
-    File.write(filename, {:custom_buttons_sets => custom_buttons_sets_hash}.to_yaml)
+    if File.file?(filename)
+      File.write(filename, {:custom_buttons_sets => custom_buttons_sets_hash}.to_yaml)
+    elsif File.directory?(filename)
+      custom_buttons_sets_hash.each do |cbs|
+        fname = "#{filename}/#{cbs["name"].gsub("|", "_")}.yaml"
+        File.write(fname, {:custom_buttons_sets => [cbs]}.to_yaml)
+      end
+    else
+      raise "Argument is not a filename or directory"
+    end
   end
 
   private
+
+  def import_file(filename)
+    contents = YAML.load_file(filename)
+    CustomButton.transaction do
+      import_custom_button_sets(contents[:custom_buttons_sets])
+    end
+  end
 
   def import_resource_actions(custom_button, resource_actions, cbs)
     #count = 0
