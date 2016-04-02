@@ -16,9 +16,16 @@ class TagImportExport
 
   def export(filename)
     raise "Must supply filename or directory" if filename.blank?
-    if File.file?(filename)
+    begin
+      file_type = File.ftype(filename)
+    rescue
+      # If we get an error back assume it is a filename that does not exist
+      file_type = 'file'
+    end
+
+    if file_type == 'file'
       File.write(filename, Classification.export_to_yaml)
-    elsif File.directory?(filename)
+    elsif file_type == 'directory'
       Classification.find_all_by_parent_id("0").each do |category|
         # Skip exporting the User roles classification
         #   as the classification does not show in the Web UI
