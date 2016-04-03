@@ -53,7 +53,7 @@ op_dialogs () {
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:dialogs:import[${IMPORT_DIR}]"
+  bin/rake "rhconsulting:service_dialogs:import[${IMPORT_DIR}]"
   popd
 }
 
