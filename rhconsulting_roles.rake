@@ -2,15 +2,44 @@ class RoleImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
   def import(filename)
-    raise "Must supply filename" if filename.blank?
-    roles = YAML.load_file(filename)
-    import_roles(roles)
+    raise "Must supply filename or directory" if filename.blank?
+    if File.file?(filename)
+      roles = YAML.load_file(filename)
+      import_roles(roles)
+    elsif File.directory?(filename)
+      Dir.glob("#{filename}/*.yaml") do |fname|
+        roles = YAML.load_file(fname)
+        import_roles(roles)
+      end
+    else
+      raise "Argument is not a filename or directory"
+    end
   end
 
   def export(filename)
-    raise "Must supply filename" if filename.blank?
-    roles_hash = export_roles(MiqUserRole.order(:id).all)
-    File.write(filename, roles_hash.to_yaml)
+    raise "Must supply filename or directory" if filename.blank?
+    begin
+      file_type = File.ftype(filename)
+    rescue
+      # If we get an error back assume it is a filename that does not exist
+      file_type = 'file'
+    end
+
+    roles_array = export_roles(MiqUserRole.order(:id).all)
+
+    if file_type == 'file'
+      File.write(filename, roles_array.to_yaml)
+    elsif file_type == 'directory'
+      roles_array.each do |role_hash|
+        role_name = role_hash["name"]
+        role_name = role_name.gsub('/', '_')
+        role_name = role_name.gsub('|', '_')
+        fname = "#{filename}/#{role_name}.yaml"
+        File.write(fname, [role_hash].to_yaml)
+      end
+    else
+      raise "Argument is not a filename or directory"
+    end
   end
 
 private
@@ -51,12 +80,12 @@ namespace :rhconsulting do
       puts 'Import - Usage: rake rhconsulting:roles:import[/path/to/export]'
     end
 
-    desc 'Import all roles from a YAML file'
+    desc 'Import all roles from a YAML file or directory'
     task :import, [:filename] => [:environment] do |_, arguments|
       RoleImportExport.new.import(arguments[:filename])
     end
 
-    desc 'Exports all roles to a YAML file'
+    desc 'Exports all roles to a YAML file or directory'
     task :export, [:filename] => [:environment] do |_, arguments|
       RoleImportExport.new.export(arguments[:filename])
     end
