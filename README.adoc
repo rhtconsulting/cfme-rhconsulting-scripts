@@ -46,7 +46,7 @@ which may be a file or directory.
 exported.
 
 Available Object Types:
-  dialogs                          Export service dialogs.
+  service_dialogs                  Export service dialogs.
   service_catalogs                 Export service catalogs.
   roles                            Export user roles.
   tags                             Export tags.
@@ -79,7 +79,7 @@ which may be a file or directory.
 imported.
 
 Available Object Types:
-  dialogs                          Import service dialogs.
+  service_dialogs                  Import service dialogs.
   service_catalogs                 Import service catalogs.
   roles                            Import user roles.
   tags                             Import tags.
