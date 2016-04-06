@@ -4,15 +4,48 @@ class CustomizationTemplateImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
   def import(filename)
-    raise "Must supply filename" if filename.blank?
-    customization_templates = YAML.load_file(filename)
-    import_customization_templates(customization_templates)
+    raise "Must supply filename or directory" if filename.blank?
+    if File.file?(filename)
+      customization_templates = YAML.load_file(filename)
+      import_customization_templates(customization_templates)
+    elsif File.directory?(filename)
+      Dir.glob("#{filename}/*.yaml") do |fname|
+        customization_templates = YAML.load_file(fname)
+        import_customization_templates(customization_templates)
+      end
+    else
+      raise "Argument is not a filename or directory"
+    end
   end
 
   def export(filename)
-    raise "Must supply filename" if filename.blank?
-    customization_templates_hash = export_customization_templates(CustomizationTemplate.where("system is not true").order(:id).all)
-    File.write(filename, customization_templates_hash.to_yaml)
+    raise "Must supply filename or directory" if filename.blank?
+    begin
+      file_type = File.ftype(filename)
+    rescue
+      # If we get an error back assume it is a filename that does not exist
+      file_type = 'file'
+    end
+
+    customization_templates_array = export_customization_templates(CustomizationTemplate.where("system is not true").order(:id).all)
+
+    if file_type == 'file'
+      File.write(filename, customization_templates_array.to_yaml)
+    elsif file_type == 'directory'
+      customization_templates_array.each do |template_hash|
+        # Get the description to use in the filename
+        name = "#{template_hash["name"]}"
+
+        # Replace invalid filename characters
+        name = name.gsub('/', '_')
+        name = name.gsub('|', '_')
+        fname = "#{filename}/#{name}.yaml"
+
+        File.write(fname, [template_hash].to_yaml)
+      end
+    else
+      raise "Argument is not a filename or directory"
+    end
   end
 
 private
@@ -54,12 +87,12 @@ namespace :rhconsulting do
       puts 'Import - Usage: rake rhconsulting:customization_templates:import[/path/to/export]'
     end
 
-    desc 'Import all customization templates from a YAML file'
+    desc 'Import all customization templates from a YAML file or directory'
     task :import, [:filename] => [:environment] do |_, arguments|
       CustomizationTemplateImportExport.new.import(arguments[:filename])
     end
 
-    desc 'Exports all customization templates to a YAML file'
+    desc 'Exports all customization templates to a YAML file or directory'
     task :export, [:filename] => [:environment] do |_, arguments|
       CustomizationTemplateImportExport.new.export(arguments[:filename])
     end
