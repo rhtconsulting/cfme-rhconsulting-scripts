@@ -182,4 +182,5 @@ NOTE: Service Catalogs should be imported last as they reference Dialogs and the
 * Jose Simonelli (jose@redhat.com)
 * Lester Claudio (claudiol@redhat.com)
 * George Goh (george.goh@redhat.com)
+* Brant Evans (bevans@redhat.com)
 
