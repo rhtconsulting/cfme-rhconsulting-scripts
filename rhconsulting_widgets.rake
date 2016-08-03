@@ -22,7 +22,11 @@ private
   def export_widgets(export_dir)
     custom_widgets = MiqWidget.find_all_by_read_only("false")
     custom_widgets.each { |widget|
-      File.write("#{export_dir}/#{widget.id}_#{widget.title}.yaml", widget.export_to_array.to_yaml)
+
+      # Set the filename and replace spaces and characters that are not allowed in filenames
+      fname = "#{widget.id}_#{widget.name}.yaml".gsub(%r{[|/]}, "_")
+
+      File.write("#{export_dir}/#{fname}", widget.export_to_array.to_yaml)
     }
   end
 
