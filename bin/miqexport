@@ -43,6 +43,34 @@ op_widgets () {
   popd
 }
 
+op_alerts () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_alerts:export[${EXPORT_DIR}]"
+  popd
+}
+
+op_alertsets () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_alertsets:export[${EXPORT_DIR}]"
+  popd
+}
+
 op_policies () {
   EXPORT_DIR=$1
 
@@ -191,6 +219,8 @@ Available Object Types:
   customization_templates          Export customization templates.
   reports                          Export custom reports.
   widgets                          Export custom widgets.
+  alerts                           Export alerts.
+  alertsets                        Export alert sets.
   policies                         Export policies.
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
