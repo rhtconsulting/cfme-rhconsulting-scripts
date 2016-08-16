@@ -1,5 +1,5 @@
 Name:      cfme-rhconsulting-scripts
-Version:   0.6
+Version:   0.8
 Release:   1
 Summary:   Red Hat Consulting Scripts for CloudForms
 
@@ -34,7 +34,8 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 /var/www/miq/vmdb/lib/tasks/rhconsulting_tags.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_customization_templates.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_roles.rake
-/var/www/miq/vmdb/lib/tasks/rhconsulting_dialogs.rake
+/var/www/miq/vmdb/lib/tasks/rhconsulting_provision_dialogs.rake
+/var/www/miq/vmdb/lib/tasks/rhconsulting_service_dialogs.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_service_catalogs.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_reports.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_widgets.rake
@@ -47,6 +48,9 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 %post
 
 %changelog
+* Mon Aug 15 2016 Brant Evans <bevans@redhat.com> 0.8
+- Added export/import for provisioning dialogs
+
 * Fri Jul 08 2016 Brant Evans <bevans@redhat.com> 0.6
 - Added export/import for widgets
 

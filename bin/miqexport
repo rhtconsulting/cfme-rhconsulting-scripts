@@ -57,7 +57,21 @@ op_policies () {
   popd
 }
 
-op_dialogs () {
+op_provision_dialogs () {
+  EXPORT_DIR=$1
+
+  if [ ! -d $EXPORT_DIR ]
+  then
+    echo "Export directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:provision_dialogs:export[${EXPORT_DIR}]"
+  popd
+}
+
+op_service_dialogs () {
   EXPORT_DIR=$1
 
   if [ ! -d $EXPORT_DIR ]
@@ -183,7 +197,8 @@ which may be a file or directory.
 exported.
 
 Available Object Types:
-  dialogs                          Export service dialogs.
+  provision_dialogs                Export provisioning dialogs.
+  service_dialogs                  Export service dialogs.
   service_catalogs                 Export service catalogs.
   roles                            Export user roles.
   tags                             Export tags.

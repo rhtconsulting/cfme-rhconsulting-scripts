@@ -1,4 +1,4 @@
-class DialogImportExport
+class ServiceDialogImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
   def export(filedir)
@@ -150,14 +150,14 @@ namespace :rhconsulting do
       puts 'Import - Usage: rake rhconsulting:service_dialogs:import[/path/to/dir/with/dialogs]'
     end
 
-    desc 'Import all dialogs to individual YAML files'
+    desc 'Import all service dialogs to individual YAML files'
     task :import, [:filedir] => [:environment] do |_, arguments|
-      DialogImportExport.new.import(arguments[:filedir])
+      ServiceDialogImportExport.new.import(arguments[:filedir])
     end
 
-    desc 'Exports all dialogs to individual YAML files'
+    desc 'Exports all service dialogs to individual YAML files'
     task :export, [:filedir] => [:environment] do |_, arguments|
-      DialogImportExport.new.export(arguments[:filedir])
+      ServiceDialogImportExport.new.export(arguments[:filedir])
     end
 
   end
