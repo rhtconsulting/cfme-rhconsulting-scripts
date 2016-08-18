@@ -31,6 +31,7 @@ export ()
   mkdir -p ${BUILDDIR}/{service_catalogs,service_dialogs,roles,tags,buttons,customization_templates,reports,widgets,policies,miq_ae_datastore}
 
   cd /var/www/miq/vmdb
+  bin/rake rhconsulting:provision_dialogs:export[${BUILDDIR}/provision_dialogs]
   bin/rake rhconsulting:service_dialogs:export[${BUILDDIR}/service_dialogs]
   bin/rake rhconsulting:service_catalogs:export[${BUILDDIR}/service_catalogs]
   bin/rake rhconsulting:roles:export[${BUILDDIR}/roles/roles.yml]

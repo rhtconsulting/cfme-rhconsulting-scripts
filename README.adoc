@@ -48,6 +48,7 @@ which may be a file or directory.
 exported.
 
 Available Object Types:
+  provision_dialogs                Export provisioning dialogs.
   service_dialogs                  Export service dialogs.
   service_catalogs                 Export service catalogs.
   roles                            Export user roles.
@@ -82,6 +83,7 @@ which may be a file or directory.
 imported.
 
 Available Object Types:
+  provision_dialogs                Import provisioning dialogs.
   service_dialogs                  Import service dialogs.
   service_catalogs                 Import service catalogs.
   roles                            Import user roles.
@@ -127,7 +129,8 @@ rm -fR ${BUILDDIR}
 mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,policies,widgets,miq_ae_datastore}
 
 cd /var/www/miq/vmdb
-bin/rake rhconsulting:service_dialogs:export[${BUILDDIR}/dialogs]
+bin/rake rhconsulting:provision_dialogs:export[${BUILDDIR}/provision_dialogs]
+bin/rake rhconsulting:service_dialogs:export[${BUILDDIR}/service_dialogs]
 bin/rake rhconsulting:service_catalogs:export[${BUILDDIR}/service_catalogs]
 bin/rake rhconsulting:roles:export[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:export[${BUILDDIR}/tags/tags.yml]
@@ -159,7 +162,8 @@ BUILDDIR=/tmp/CFME-build
 DOMAIN_IMPORT=YourDomainHere
 
 cd /var/www/miq/vmdb
-bin/rake rhconsulting:service_dialogs:import[${BUILDDIR}/dialogs]
+bin/rake rhconsulting:provision_dialogs:import[${BUILDDIR}/provision_dialogs]
+bin/rake rhconsulting:service_dialogs:import[${BUILDDIR}/service_dialogs]
 bin/rake rhconsulting:roles:import[${BUILDDIR}/roles/roles.yml]
 bin/rake rhconsulting:tags:import[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
