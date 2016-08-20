@@ -56,6 +56,8 @@ Available Object Types:
   customization_templates          Export customization templates.
   reports                          Export custom reports.
   widgets                          Export custom widgets.
+  alerts                           Export alerts.
+  alertsets                        Export alert sets.
   policies                         Export policies.
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
@@ -90,6 +92,8 @@ Available Object Types:
   customization_templates          Import customization templates.
   reports                          Import custom reports.
   widgets                          Import custom widgets.
+  alerts                           Import alerts.
+  alertsets                        Import alert sets.
   policies                         Import policies.
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
@@ -124,7 +128,7 @@ BUILDDIR=/tmp/CFME-build
 DOMAIN_EXPORT=YourDomainHere
 
 rm -fR ${BUILDDIR}
-mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,policies,widgets,miq_ae_datastore}
+mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,policies,alerts,alertsets,widgets,miq_ae_datastore}
 
 cd /var/www/miq/vmdb
 bin/rake rhconsulting:service_dialogs:export[${BUILDDIR}/dialogs]
@@ -134,6 +138,8 @@ bin/rake rhconsulting:tags:export[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:export[${BUILDDIR}/buttons/buttons.yml]
 bin/rake rhconsulting:customization_templates:export[${BUILDDIR}/customization_templates/customization_templates.yml]
 bin/rake rhconsulting:miq_policies:export[${BUILDDIR}/policies]
+bin/rake rhconsulting:miq_alerts:export[${BUILDDIR}/alerts]
+bin/rake rhconsulting:miq_alertsets:export[${BUILDDIR}/alertsets]
 bin/rake rhconsulting:miq_widgets:export[${BUILDDIR}/widgets]
 bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_EXPORT}, ${BUILDDIR}/miq_ae_datastore]"
 ----
@@ -165,6 +171,8 @@ bin/rake rhconsulting:tags:import[${BUILDDIR}/tags/tags.yml]
 bin/rake rhconsulting:buttons:import[${BUILDDIR}/buttons/buttons.yml]
 bin/rake rhconsulting:customization_templates:import[${BUILDDIR}/customization_templates/customization_templates.yml]
 bin/rake rhconsulting:miq_policies:import[${BUILDDIR}/policies]
+bin/rake rhconsulting:miq_alerts:import[${BUILDDIR}/alerts]
+bin/rake rhconsulting:miq_alertsets:import[${BUILDDIR}/alertsets]
 bin/rake rhconsulting:miq_widgets:import[${BUILDDIR}/widgets]
 bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
 bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq_ae_datastore]"

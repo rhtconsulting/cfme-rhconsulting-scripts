@@ -59,6 +59,8 @@ import()
   bin/rake rhconsulting:buttons:import[${DIR}/buttons/buttons.yml]
   bin/rake rhconsulting:customization_templates:import[${DIR}/customization_templates/customization_templates.yml]
   bin/rake rhconsulting:miq_policies:import[${DIR}/policies]
+  bin/rake rhconsulting:miq_alerts:import[${DIR}/alerts]
+  bin/rake rhconsulting:miq_alertsets:import[${DIR}/alertsets]
   bin/rake rhconsulting:service_catalogs:import[${DIR}/service_catalogs]
   bin/rake rhconsulting:miq_reports:import[${DIR}/reports]
   bin/rake rhconsulting:miq_widgets:import[${DIR}/widgets]

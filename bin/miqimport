@@ -43,6 +43,34 @@ op_widgets () {
   popd
 }
 
+op_alerts () {
+  IMPORT_DIR=$1
+
+  if [ ! -d $IMPORT_DIR ]
+  then
+    echo "Import directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_alerts:import[${IMPORT_DIR}]"
+  popd
+}
+
+op_alertsets () {
+  IMPORT_DIR=$1
+
+  if [ ! -d $IMPORT_DIR ]
+  then
+    echo "Import directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_alertsets:import[${IMPORT_DIR}]"
+  popd
+}
+
 op_policies () {
   IMPORT_DIR=$1
 
