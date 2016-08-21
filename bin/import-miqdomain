@@ -53,6 +53,7 @@ domain_name()
 import()
 {
   cd /var/www/miq/vmdb
+  bin/rake rhconsulting:provision_dialogs:import[${DIR}/provision_dialogs]
   bin/rake rhconsulting:service_dialogs:import[${DIR}/service_dialogs]
   bin/rake rhconsulting:roles:import[${DIR}/roles/roles.yml]
   bin/rake rhconsulting:tags:import[${DIR}/tags/tags.yml]

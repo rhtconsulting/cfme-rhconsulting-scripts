@@ -85,7 +85,21 @@ op_policies () {
   popd
 }
 
-op_dialogs () {
+op_provision_dialogs () {
+  IMPORT_DIR=$1
+
+  if [ ! -d $IMPORT_DIR ]
+  then
+    echo "Import directory doesn't exist!"
+    exit 1
+  fi
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:provision_dialogs:import[${IMPORT_DIR}]"
+  popd
+}
+
+op_service_dialogs () {
   IMPORT_DIR=$1
 
   if [ ! -d $IMPORT_DIR ]
@@ -211,7 +225,8 @@ which may be a file or directory.
 imported.
 
 Available Object Types:
-  dialogs                          Import service dialogs.
+  provision_dialogs                Import provisioning dialogs.
+  service_dialogs                  Import service dialogs.
   service_catalogs                 Import service catalogs.
   roles                            Import user roles.
   tags                             Import tags.
