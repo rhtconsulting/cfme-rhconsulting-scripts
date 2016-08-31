@@ -29,7 +29,12 @@ private
     MiqPolicy.all.each do |p|
       puts("Exporting Policy: #{p.description}")
 
-      File.write("#{export_dir}/Policy_#{p.description.gsub('/', '_')}.yaml", p.export_to_yaml)
+      # Replace invalid filename characters
+      # Illegal characters: '/', '|', ' '
+      # Replaced with: '_'
+      pname = p.description.gsub(%r{[/| ]}, '_')
+      fname = "Policy_#{pname}.yaml"
+      File.write("#{export_dir}/#{fname}", p.export_to_yaml)
     end
   end
 
@@ -37,7 +42,12 @@ private
     MiqPolicySet.all.each do |p|
       puts("Exporting Policy Profile: #{p.description}")
 
-      File.write("#{export_dir}/Profile_#{p.description.gsub('/', '_')}.yaml", p.export_to_yaml)
+      # Replace invalid filename characters
+      # Illegal characters: '/', '|', ' '
+      # Replaced with: '_'
+      pname = p.description.gsub(%r{[/| ]}, '_')
+      fname = "Profile_#{pname}.yaml"
+      File.write("#{export_dir}/#{fname}", p.export_to_yaml)
     end
   end
 

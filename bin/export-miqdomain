@@ -28,21 +28,21 @@ check_root()
 
 export ()
 {
-  mkdir -p ${BUILDDIR}/{service_catalogs,service_dialogs,roles,tags,buttons,customization_templates,reports,widgets,policies,alerts,alertsets,miq_ae_datastore}
+  mkdir -p "${BUILDDIR}"/{provision_dialogs,service_catalogs,service_dialogs,roles,tags,buttons,customization_templates,reports,widgets,policies,alerts,alertsets,miq_ae_datastore}
 
   cd /var/www/miq/vmdb
-  bin/rake rhconsulting:provision_dialogs:export[${BUILDDIR}/provision_dialogs]
-  bin/rake rhconsulting:service_dialogs:export[${BUILDDIR}/service_dialogs]
-  bin/rake rhconsulting:service_catalogs:export[${BUILDDIR}/service_catalogs]
-  bin/rake rhconsulting:roles:export[${BUILDDIR}/roles/roles.yml]
-  bin/rake rhconsulting:tags:export[${BUILDDIR}/tags/tags.yml]
-  bin/rake rhconsulting:buttons:export[${BUILDDIR}/buttons/buttons.yml]
-  bin/rake rhconsulting:miq_reports:export[${BUILDDIR}/reports]
-  bin/rake rhconsulting:miq_widgets:export[${BUILDDIR}/widgets]
-  bin/rake rhconsulting:customization_templates:export[${BUILDDIR}/customization_templates/customization_templates.yml]
-  bin/rake rhconsulting:miq_policies:export[${BUILDDIR}/policies]
-  bin/rake rhconsulting:miq_alerts:export[${BUILDDIR}/alerts]
-  bin/rake rhconsulting:miq_alertsets:export[${BUILDDIR}/alertsets]
+  bin/rake rhconsulting:provision_dialogs:export["${BUILDDIR}/provision_dialogs"]
+  bin/rake rhconsulting:service_dialogs:export["${BUILDDIR}/service_dialogs"]
+  bin/rake rhconsulting:service_catalogs:export["${BUILDDIR}/service_catalogs"]
+  bin/rake rhconsulting:roles:export["${BUILDDIR}/roles/roles.yml"]
+  bin/rake rhconsulting:tags:export["${BUILDDIR}/tags/tags.yml"]
+  bin/rake rhconsulting:buttons:export["${BUILDDIR}/buttons/buttons.yml"]
+  bin/rake rhconsulting:miq_reports:export["${BUILDDIR}/reports"]
+  bin/rake rhconsulting:miq_widgets:export["${BUILDDIR}/widgets"]
+  bin/rake rhconsulting:customization_templates:export["${BUILDDIR}/customization_templates/customization_templates.yml"]
+  bin/rake rhconsulting:miq_policies:export["${BUILDDIR}/policies"]
+  bin/rake rhconsulting:miq_alerts:export["${BUILDDIR}/alerts"]
+  bin/rake rhconsulting:miq_alertsets:export["${BUILDDIR}/alertsets"]
   bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN}, ${BUILDDIR}/miq_ae_datastore]"
 }
 
@@ -56,10 +56,10 @@ while getopts "d:,D:,:h" opts; do
       exit 1
       ;;
     d)
-      DOMAIN=${OPTARG}
+      DOMAIN="$OPTARG"
       ;;
     D)
-      BUILDDIR=${OPTARG}
+      BUILDDIR="$OPTARG"
       ;;
     \?)
       echo "Invalid option -$OPTARG" >&2
@@ -74,7 +74,7 @@ while getopts "d:,D:,:h" opts; do
   esac
 done
 
-if [[ -z ${DOMAIN} ]] || [[ -z ${BUILDDIR} ]]; then
+if [[ -z "${DOMAIN}" ]] || [[ -z "${BUILDDIR}" ]]; then
   usage
   exit 1
 fi

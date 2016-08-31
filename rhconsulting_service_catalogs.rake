@@ -41,7 +41,11 @@ class ServiceCatalogsImportExport
       }
       data = []
       data << output
-      File.write("#{filedir}/#{output["#{catalog_name}"]['name']}.yml", data.to_yaml)
+      # Replace invalid filename characters
+      # Illegal characters: '/', '|', ' '
+      # Replaced with: '_'
+      fname = output["#{catalog_name}"]['name'].gsub(%r{[/| ]}, '_')
+      File.write("#{filedir}/#{fname}.yml", data.to_yaml)
     }
   end
 

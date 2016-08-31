@@ -32,8 +32,10 @@ class RoleImportExport
     elsif file_type == 'directory'
       roles_array.each do |role_hash|
         role_name = role_hash["name"]
-        role_name = role_name.gsub('/', '_')
-        role_name = role_name.gsub('|', '_')
+        # Replace invalid filename characters
+        # Illegal characters: '/', '|', ' '
+        # Replaced with: '_'
+        role_name = role_name.gsub(%r{[/| ]}, '_')
         fname = "#{filename}/#{role_name}.yaml"
         File.write(fname, [role_hash].to_yaml)
       end

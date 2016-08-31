@@ -4,9 +4,9 @@ op_domain () {
   DOMAIN_NAME=$1
   IMPORT_DIR=$2
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -d "$IMPORT_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
     exit 1
   fi
 
@@ -18,9 +18,9 @@ op_domain () {
 op_reports () {
   IMPORT_DIR=$1
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -d "$IMPORT_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
     exit 1
   fi
 
@@ -32,9 +32,9 @@ op_reports () {
 op_widgets () {
   IMPORT_DIR=$1
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -d "$IMPORT_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
     exit 1
   fi
 
@@ -44,39 +44,39 @@ op_widgets () {
 }
 
 op_alerts () {
-  IMPORT_DIR=$1
+  IMPORT_FILE_OR_DIR=$1
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_alerts:import[${IMPORT_DIR}]"
+  bin/rake "rhconsulting:miq_alerts:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 op_alertsets () {
-  IMPORT_DIR=$1
+  IMPORT_FILE_OR_DIR=$1
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_alertsets:import[${IMPORT_DIR}]"
+  bin/rake "rhconsulting:miq_alertsets:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 op_policies () {
   IMPORT_DIR=$1
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -d "$IMPORT_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
     exit 1
   fi
 
@@ -86,39 +86,39 @@ op_policies () {
 }
 
 op_provision_dialogs () {
-  IMPORT_DIR=$1
+  IMPORT_FILE_OR_DIR=$1
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:provision_dialogs:import[${IMPORT_DIR}]"
+  bin/rake "rhconsulting:provision_dialogs:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 op_service_dialogs () {
-  IMPORT_DIR=$1
+  IMPORT_FILE_OR_DIR=$1
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:service_dialogs:import[${IMPORT_DIR}]"
+  bin/rake "rhconsulting:service_dialogs:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 op_service_catalogs () {
   IMPORT_DIR=$1
 
-  if [ ! -d $IMPORT_DIR ]
+  if [ ! -d "$IMPORT_DIR" ]
   then
-    echo "Import directory doesn't exist!"
+    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
     exit 1
   fi
 
@@ -128,65 +128,65 @@ op_service_catalogs () {
 }
 
 op_roles () {
-  IMPORT_FILE=$1
+  IMPORT_FILE_OR_DIR=$1
 
-  if [ ! -f $IMPORT_FILE ]
+  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
-    echo "Import file doesn't exist!"
+    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:roles:import[${IMPORT_FILE}]"
+  bin/rake "rhconsulting:roles:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 op_tags () {
-  IMPORT_FILE=$1
+  IMPORT_FILE_OR_DIR=$1
 
-  if [ ! -f $IMPORT_FILE ]
+  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
-    echo "Import file doesn't exist!"
+    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:tags:import[${IMPORT_FILE}]"
+  bin/rake "rhconsulting:tags:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 op_buttons () {
-  IMPORT_FILE=$1
+  IMPORT_FILE_OR_DIR=$1
 
-  if [ ! -f $IMPORT_FILE ]
+  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
-    echo "Import file doesn't exist!"
+    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:buttons:import[${IMPORT_FILE}]"
+  bin/rake "rhconsulting:buttons:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 op_customization_templates () {
-  IMPORT_FILE=$1
+  IMPORT_FILE_OR_DIR=$1
 
-  if [ ! -f $IMPORT_FILE ]
+  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
-    echo "Import file doesn't exist!"
+    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:customization_templates:import[${IMPORT_FILE}]"
+  bin/rake "rhconsulting:customization_templates:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 contains () {
   SEARCH_TERM=$1
   shift
-  LIST=$@
+  LIST="$@"
 
   for element in $LIST; do
     if [[ "$SEARCH_TERM" == "$element" ]]; then
@@ -206,7 +206,7 @@ parse_action () {
   if [ $VALID_OP -eq 0 ]
   then
     shift
-    $op_func $@
+    $op_func "$@"
   else
     usage
   fi

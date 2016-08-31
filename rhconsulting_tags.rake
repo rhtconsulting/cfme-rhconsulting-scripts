@@ -37,8 +37,9 @@ class TagImportExport
         description = "#{category.description}"
 
         # Replace invalid filename characters
-        description = description.gsub('/', '_')
-        description = description.gsub('|', '_')
+        # Illegal characters: '/', '|', ' '
+        # Replaced with: '_'
+        description = description.gsub(%r{[/| ]}, '_')
         fname = "#{filename}/#{description}.yaml"
 
         File.write(fname, category.export_to_yaml)

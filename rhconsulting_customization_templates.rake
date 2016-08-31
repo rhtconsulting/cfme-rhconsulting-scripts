@@ -37,8 +37,9 @@ class CustomizationTemplateImportExport
         name = "#{template_hash["name"]}"
 
         # Replace invalid filename characters
-        name = name.gsub('/', '_')
-        name = name.gsub('|', '_')
+        # Illegal characters: '/', '|', ' '
+        # Replaced with: '_'
+        name = name.gsub(%r{[/| ]}, '_')
         fname = "#{filename}/#{name}.yaml"
 
         File.write(fname, [template_hash].to_yaml)

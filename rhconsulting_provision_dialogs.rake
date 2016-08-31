@@ -17,7 +17,9 @@ class ProvisionDialogImportExport
     # Save provision dialogs
     dialog_array.each do |dialog|
       # Set the filename and replace characters that are not allowed in filenames
-      fname = "#{dialog[:name]}.yaml".gsub(%r{[|/]}, "_")
+      # Illegal characters: '/', '|', ' '
+      # Replaced with: '_'
+      fname = "#{dialog[:name]}.yaml".gsub(%r{[|/ ]}, "_")
 
       File.write("#{filedir}/#{fname}", dialog.to_yaml)
     end

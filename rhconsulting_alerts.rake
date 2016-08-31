@@ -52,9 +52,9 @@ class MiqAlertsImportExport
   def export_alerts(export_dir)
     MiqAlert.order(:id).all.each do |a|
       # Replace characters in the description that are not allowed in filenames
-      fname = a.description.gsub('/', '_')
-      fname = fname.gsub('|', '_')
-
+      # Illegal characters: '/', '|', ' '
+      # Replaced with: '_'
+      fname = a.description.gsub(%r{[/| ]}, '_')
       File.write("#{export_dir}/#{fname}.yaml", a.export_to_yaml)
     end
   end
@@ -64,9 +64,9 @@ class MiqAlertsImportExport
       puts("Exporting Alert Set: #{a.description}")
 
       # Replace characters in the description that are not allowed in filenames
-      fname = a.description.gsub('/', '_')
-      fname = fname.gsub('|', '_')
-
+      # Illegal characters: '/', '|', ' '
+      # Replaced with: '_'
+      fname = a.description.gsub(%r{[/| ]}, '_')
       File.write("#{export_dir}/#{fname}.yaml", a.export_to_yaml)
     end
   end

@@ -22,8 +22,12 @@ class MiqReportImportExport
     raise "Must supply export dir" if export_dir.blank?
     custom_reports = MiqReport.where(:rpt_type => "Custom")
     custom_reports.each { |report|
-      File.write("#{export_dir}/#{report.id}_#{report.name.gsub('/', '_')}.yml", 
-                 report.export_to_array.to_yaml)
+      # Replace invalid filename characters
+      # Illegal characters: '/', '|', ' '
+      # Replaced with: '_'
+      name = report.name.gsub(%r{[/| ]}, '_')
+      fname = "#{report.id}_#{name}.yaml"
+      File.write("#{export_dir}/#{fname}", report.export_to_array.to_yaml)
     }
   end
 end

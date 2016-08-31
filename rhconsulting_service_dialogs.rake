@@ -7,7 +7,11 @@ class ServiceDialogImportExport
     dialogs_hash.each { |x|
       data = []
       data << x
-      File.write("#{filedir}/#{x['label']}.yml", data.to_yaml)
+      # Replace invalid filename characters
+      # Illegal characters: '/', '|', ' '
+      # Replaced with: '_'
+      fname = x['label'].gsub(%r{[/| ]}, '_')
+      File.write("#{filedir}/#{fname}.yml", data.to_yaml)
     }
   end
 

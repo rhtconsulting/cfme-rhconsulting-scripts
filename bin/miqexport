@@ -4,9 +4,9 @@ op_domain () {
   DOMAIN_NAME=$1
   EXPORT_DIR=$2
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -18,9 +18,9 @@ op_domain () {
 op_reports () {
   EXPORT_DIR=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -32,9 +32,9 @@ op_reports () {
 op_widgets () {
   EXPORT_DIR=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -46,9 +46,9 @@ op_widgets () {
 op_alerts () {
   EXPORT_DIR=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -60,9 +60,9 @@ op_alerts () {
 op_alertsets () {
   EXPORT_DIR=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -74,9 +74,9 @@ op_alertsets () {
 op_policies () {
   EXPORT_DIR=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -88,23 +88,23 @@ op_policies () {
 op_provision_dialogs () {
   EXPORT_DIR=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:provision_dialogs:export[${EXPORT_DIR}]"
+  bin/rake --trace "rhconsulting:provision_dialogs:export[${EXPORT_DIR}]"
   popd
 }
 
 op_service_dialogs () {
   EXPORT_DIR=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -116,9 +116,9 @@ op_service_dialogs () {
 op_service_catalogs () {
   EXPORT_DIR=$1
 
-  if [ ! -d $EXPORT_DIR ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -129,10 +129,11 @@ op_service_catalogs () {
 
 op_roles () {
   EXPORT_FILE=$1
+  EXPORT_DIR=$(dirname "$EXPORT_FILE")
 
-  if [ ! -d `dirname $EXPORT_FILE` ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -143,10 +144,11 @@ op_roles () {
 
 op_tags () {
   EXPORT_FILE=$1
+  EXPORT_DIR=$(dirname "$EXPORT_FILE")
 
-  if [ ! -d `dirname $EXPORT_FILE` ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -157,10 +159,11 @@ op_tags () {
 
 op_buttons () {
   EXPORT_FILE=$1
+  EXPORT_DIR=$(dirname "$EXPORT_FILE")
 
-  if [ ! -d `dirname $EXPORT_FILE` ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -171,10 +174,11 @@ op_buttons () {
 
 op_customization_templates () {
   EXPORT_FILE=$1
+  EXPORT_DIR=$(dirname "$EXPORT_FILE")
 
-  if [ ! -d `dirname $EXPORT_FILE` ]
+  if [ ! -d "$EXPORT_DIR" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Export directory doesn't exist! [${EXPORT_DIR}]"
     exit 1
   fi
 
@@ -206,7 +210,7 @@ parse_action () {
   if [ $VALID_OP -eq 0 ]
   then
     shift
-    $op_func $@
+    $op_func "$@"
   else
     usage
   fi
