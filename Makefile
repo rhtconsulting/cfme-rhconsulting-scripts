@@ -39,8 +39,9 @@ install:
 	install -Dm755 bin/export-miqdomain /usr/bin/export-miqdomain
 	install -Dm755 bin/import-miqdomain /usr/bin/import-miqdomain
 
-clean-install: rm-installed-files install
+uninstall: rm-installed-files
 
+clean-install: rm-installed-files install
 
 TARBALL := $(shell rpmbuild -E %{_sourcedir})/cfme-rhconsulting-scripts-$(VERSION)-$(RELEASE).tar.gz
 
