@@ -2,7 +2,7 @@
 
 op_domain () {
   DOMAIN_NAME=$1
-  IMPORT_DIR=$(readlink -v -f $2)
+  IMPORT_DIR=$(readlink -v -f "$2")
 
   if [ ! -d "$IMPORT_DIR" ]
   then
@@ -16,7 +16,7 @@ op_domain () {
 }
 
 op_reports () {
-  IMPORT_DIR=$(readlink -v -f $1)
+  IMPORT_DIR=$(readlink -v -f "$1")
 
   if [ ! -d "$IMPORT_DIR" ]
   then
@@ -30,7 +30,7 @@ op_reports () {
 }
 
 op_widgets () {
-  IMPORT_DIR=$(readlink -v -f $1)
+  IMPORT_DIR=$(readlink -v -f "$1")
 
   if [ ! -d "$IMPORT_DIR" ]
   then
@@ -44,7 +44,7 @@ op_widgets () {
 }
 
 op_alerts () {
-  IMPORT_FILE_OR_DIR=$(readlink -v -f $1)
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
 
   if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
@@ -58,7 +58,7 @@ op_alerts () {
 }
 
 op_alertsets () {
-  IMPORT_FILE_OR_DIR=$(readlink -v -f $1)
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
 
   if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
@@ -72,7 +72,7 @@ op_alertsets () {
 }
 
 op_policies () {
-  IMPORT_DIR=$(readlink -v -f $1)
+  IMPORT_DIR=$(readlink -v -f "$1")
 
   if [ ! -d "$IMPORT_DIR" ]
   then
@@ -86,7 +86,7 @@ op_policies () {
 }
 
 op_provision_dialogs () {
-  IMPORT_FILE_OR_DIR=$(readlink -v -f $1)
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
 
   if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
@@ -100,7 +100,7 @@ op_provision_dialogs () {
 }
 
 op_service_dialogs () {
-  IMPORT_FILE_OR_DIR=$(readlink -v -f $1)
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
 
   if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
@@ -114,7 +114,7 @@ op_service_dialogs () {
 }
 
 op_service_catalogs () {
-  IMPORT_DIR=$(readlink -v -f $1)
+  IMPORT_DIR=$(readlink -v -f "$1")
 
   if [ ! -d "$IMPORT_DIR" ]
   then
@@ -128,7 +128,7 @@ op_service_catalogs () {
 }
 
 op_roles () {
-  IMPORT_FILE_OR_DIR=$(readlink -v -f $1)
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
 
   if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
@@ -142,7 +142,7 @@ op_roles () {
 }
 
 op_tags () {
-  IMPORT_FILE_OR_DIR=$(readlink -v -f $1)
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
 
   if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
@@ -156,7 +156,7 @@ op_tags () {
 }
 
 op_buttons () {
-  IMPORT_FILE_OR_DIR=$(readlink -v -f $1)
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
 
   if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
@@ -170,7 +170,7 @@ op_buttons () {
 }
 
 op_customization_templates () {
-  IMPORT_FILE_OR_DIR=$(readlink -v -f $1)
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
 
   if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
   then
