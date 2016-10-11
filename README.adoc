@@ -63,10 +63,17 @@ Available Object Types:
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
+                                   
+Options:
+  -s, --keep-spaces                Export filenames with spaces instead of
+                                   replacing the spaces with underscores.
+                                   (this preserves old behavior)
 ----
 
-*Note* As of version 0.9 spaces in exported filenames will be replaced with
-underscores. To preserve the old behavior 
+**Note:
+As of version 0.9 spaces in exported filenames are be replaced with
+underscores. To preserve the old behavior and keep spaces in the filenames
+pass in `-s` or `--keep-spaces` to the miqexport script.**
 
 == Example exports
 ----
