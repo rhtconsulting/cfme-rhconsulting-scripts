@@ -23,9 +23,16 @@ namespace :rhconsulting do
 
     desc 'Usage information'
     task :usage => [:environment] do
-      puts 'Export - Usage: rake \'rhconsulting:miq_ae_datastore:export[domain_to_export, /path/to/export]\''
-      puts 'Import - Usage: rake \'rhconsulting:miq_ae_datastore:import[domain_to_import, /path/to/import]\''
-      puts "Import (Disabled) - Usage: rake 'rhconsulting:miq_ae_datastore:import_disabled[domain_to_import, /path/to/import]'"
+      puts 'Export - Usage: rake \'rhconsulting:miq_ae_datastore:export[domain_to_export,/path/to/export]\''
+      puts 'Import - Usage: rake \'rhconsulting:miq_ae_datastore:import[domain_to_import,/path/to/import]\''
+      puts "Import (Disabled) - Usage: rake 'rhconsulting:miq_ae_datastore:import_disabled[domain_to_import,/path/to/import]'"
+      puts "Import with options - Usage: rake 'rhconsulting:miq_ae_datastore:import[domain_to_import,/path/to/import,option=value;option2=value2'"
+      puts '  Where each option is one of:'
+      puts '   * enabled=<true|false>'
+      puts '   * import_as=<new_domain_name>'
+      puts '   * overwrite=true'
+      puts '   * tenant_name=<tenant_name>'
+      puts '   * tenant_id=<tenant_id>'
     end
 
     desc 'Import a specific AE Datastore domain from a directory'
@@ -36,6 +43,33 @@ namespace :rhconsulting do
     desc 'Import a specific AE Datastore domain from a directory as disabled'
     task :import_disabled, [:domain_name, :filename] => [:environment] do |_, arguments|
       MiqAeDatastoreImportExport.new.import(arguments[:domain_name], 'import_dir' => arguments[:filename], 'enabled' => false)
+    end
+
+    desc 'Import a specific datastore with options.'
+    task :import_with_options, [:domain_name, :filename, :options] => [:environment] do |_, arguments|
+      options = { 'import_dir' => arguments[:filename] }
+
+      # Add in any extra options passed in.
+      arguments['options'].split(';').each do |passed_option|
+        option, value = passed_option.split('=')
+        case option
+        when 'enabled'
+          options['enabled'] = value =~ /^true$/ ? true : false
+        when 'overwrite'
+          # Only set overwrite when explicitly true. Some internal code treats
+          # any value as true.
+          options['overwrite'] = true if value =~ /^true$/
+        when 'tenant_name'
+          tenant = Tenant.find_by_name(value)
+          raise "Tenant #{value} not found." unless tenant
+          options['tenant_id'] = tenant.id
+        when 'tenant_id', 'import_as'
+          options[option] = value
+        else
+          raise ArgumentError, "Unrecognized option #{option}"
+        end
+      end
+      MiqAeDatastoreImportExport.new.import(arguments[:domain_name], options)
     end
 
     desc 'Exports a specific AE Datastore domain to a directory'

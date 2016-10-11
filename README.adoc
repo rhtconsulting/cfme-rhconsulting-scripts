@@ -10,7 +10,7 @@ IMPORTANT: Exporting and importing of widgets requires CloudForms 4.1 or ManageI
 
 == Install
 
-Option 1) use make commands    
+Option 1) use make commands
 
 * Get latest files from github
 ----
@@ -80,8 +80,8 @@ pass in `-s` or `--keep-spaces` to the miqexport script.**
 # export the 'MyCustomDomain' to /tmp, i.e., /tmp/MyCustomDomain
 miqexport domain MyCustomDomain /tmp
 
-# export dialogs to /tmp/dialogs
-miqexport dialogs /tmp/dialogs
+# export service dialogs to /tmp/dialogs
+miqexport service_dialogs /tmp/dialogs
 ----
 
 == Import Command
@@ -117,14 +117,14 @@ Available Object Types:
 # import 'MyCustomDomain' from /tmp, i.e., /tmp/MyCustomDomain
 miqimport domain MyCustomDomain /tmp
 
-# import dialogs from /tmp/dialogs
-miqimport dialogs /tmp/dialogs
+# import service dialogs from /tmp/dialogs
+miqimport service_dialogs /tmp/dialogs
 ----
 
 == Export examples using rake
 * You can do the export by using the `export-miqdomain` script or manually as well.
 ----
-export-domain 
+export-domain
 Usage: ./export-domain -d CloudFormsDomain -D /path/to/the/directory
 
 OPTIONS:
@@ -159,10 +159,10 @@ bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_EXPORT}, ${BUILDDIR}/miq
 
 == Import examples using rake
 
-* You can do the import by using the `import-miqdomain` script or manually as well. 
+* You can do the import by using the `import-miqdomain` script or manually as well.
 
 ----
-import-miqdomain 
+import-miqdomain
 Usage: ./import-miqdomain -D /absolute/path/to/the/directory
 
 OPTIONS:
@@ -205,4 +205,3 @@ NOTE: Service Catalogs should be imported last as they reference Dialogs and the
 * Lester Claudio (claudiol@redhat.com)
 * George Goh (george.goh@redhat.com)
 * Brant Evans (bevans@redhat.com)
-
