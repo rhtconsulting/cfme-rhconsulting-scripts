@@ -1,20 +1,22 @@
 # Author: Brant Evans <bevans@redhat.com>
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
 
 class MiqAlertsImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
-  def export(export_dir)
+  def export(export_dir, options = {})
     raise "Must supply export dir" if export_dir.blank?
-
+    
     # Export the Alerts
-    export_alerts(export_dir)
+    export_alerts(export_dir, options)
   end
 
-  def export_sets(export_dir)
+  def export_sets(export_dir, options = {})
     raise "Must supply export dir" if export_dir.blank?
 
     # Export the Alert Sets
-    export_alert_sets(export_dir)
+    export_alert_sets(export_dir, options)
   end
 
   def import(import_name)
@@ -49,24 +51,20 @@ class MiqAlertsImportExport
 
   private
 
-  def export_alerts(export_dir)
+  def export_alerts(export_dir, options)
     MiqAlert.order(:id).all.each do |a|
       # Replace characters in the description that are not allowed in filenames
-      # Illegal characters: '/', '|', ' '
-      # Replaced with: '_'
-      fname = a.description.gsub(%r{[/| ]}, '_')
+      fname = MiqIllegalChars.replace(a.description, options)
       File.write("#{export_dir}/#{fname}.yaml", a.export_to_yaml)
     end
   end
 
-  def export_alert_sets(export_dir)
+  def export_alert_sets(export_dir, options)
     MiqAlertSet.order(:id).all.each do |a|
       puts("Exporting Alert Set: #{a.description}")
 
       # Replace characters in the description that are not allowed in filenames
-      # Illegal characters: '/', '|', ' '
-      # Replaced with: '_'
-      fname = a.description.gsub(%r{[/| ]}, '_')
+      fname = MiqIllegalChars.replace(a.description, options)
       File.write("#{export_dir}/#{fname}.yaml", a.export_to_yaml)
     end
   end
@@ -100,7 +98,8 @@ namespace :rhconsulting do
 
     desc 'Exports all alerts to individual YAML files'
     task :export, [:filedir] => [:environment] do |_, arguments|
-      MiqAlertsImportExport.new.export(arguments[:filedir])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      MiqAlertsImportExport.new.export(arguments[:filedir], options)
     end
 
     desc 'Imports all alerts from individual YAML files'
@@ -120,7 +119,8 @@ namespace :rhconsulting do
 
     desc 'Exports all alerts to individual YAML files'
     task :export, [:filedir] => [:environment] do |_, arguments|
-      MiqAlertsImportExport.new.export_sets(arguments[:filedir])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      MiqAlertsImportExport.new.export_sets(arguments[:filedir], options)
     end
 
     desc 'Imports all alerts from individual YAML files'

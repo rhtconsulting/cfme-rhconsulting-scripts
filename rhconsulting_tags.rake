@@ -1,3 +1,6 @@
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
+
 class TagImportExport
   class ParsedNonClassificationYamlError < StandardError; end
 
@@ -16,7 +19,7 @@ class TagImportExport
     end
   end
 
-  def export(filename)
+  def export(filename, options = {})
     raise "Must supply filename or directory" if filename.blank?
     begin
       file_type = File.ftype(filename)
@@ -37,9 +40,7 @@ class TagImportExport
         description = "#{category.description}"
 
         # Replace invalid filename characters
-        # Illegal characters: '/', '|', ' '
-        # Replaced with: '_'
-        description = description.gsub(%r{[/| ]}, '_')
+        description = MiqIllegalChars.replace(description, options)
         fname = "#{filename}/#{description}.yaml"
 
         File.write(fname, category.export_to_yaml)
@@ -106,7 +107,8 @@ namespace :rhconsulting do
 
     desc 'Exports all tags to a YAML file'
     task :export, [:filename] => [:environment] do |_, arguments|
-      TagImportExport.new.export(arguments[:filename])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      TagImportExport.new.export(arguments[:filename], options)
     end
 
   end

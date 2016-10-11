@@ -1,10 +1,12 @@
 # Heavily based on a rails script written by Dustin Scott <dscott@redhat.com>
 # Author: Brant Evans <bevans@redhat.com>
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
 
 class ProvisionDialogImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
-  def export(filedir)
+  def export(filedir, options = {})
     # Do some basic checks
     raise "Must supply export directory" if filedir.blank?
     raise "#{filedir} does not exist" if ! File.exist?(filedir)
@@ -17,10 +19,7 @@ class ProvisionDialogImportExport
     # Save provision dialogs
     dialog_array.each do |dialog|
       # Set the filename and replace characters that are not allowed in filenames
-      # Illegal characters: '/', '|', ' '
-      # Replaced with: '_'
-      fname = "#{dialog[:name]}.yaml".gsub(%r{[|/ ]}, "_")
-
+      fname = MiqIllegalChars.replace("#{dialog[:name]}.yaml", options)
       File.write("#{filedir}/#{fname}", dialog.to_yaml)
     end
   end
@@ -85,7 +84,8 @@ namespace :rhconsulting do
 
     desc 'Exports all provisioning dialogs to individual YAML files'
     task :export, [:filedir] => [:environment] do |_, arguments|
-      ProvisionDialogImportExport.new.export(arguments[:filedir])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      ProvisionDialogImportExport.new.export(arguments[:filedir], options)
     end
 
   end

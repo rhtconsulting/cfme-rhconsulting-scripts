@@ -1,4 +1,6 @@
 # Author: George Goh <george.goh@redhat.com>
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
 
 class CustomizationTemplateImportExport
   class ParsedNonDialogYamlError < StandardError; end
@@ -18,7 +20,7 @@ class CustomizationTemplateImportExport
     end
   end
 
-  def export(filename)
+  def export(filename, options = {})
     raise "Must supply filename or directory" if filename.blank?
     begin
       file_type = File.ftype(filename)
@@ -37,9 +39,7 @@ class CustomizationTemplateImportExport
         name = "#{template_hash["name"]}"
 
         # Replace invalid filename characters
-        # Illegal characters: '/', '|', ' '
-        # Replaced with: '_'
-        name = name.gsub(%r{[/| ]}, '_')
+        name = MiqIllegalChars.replace(name, options)
         fname = "#{filename}/#{name}.yaml"
 
         File.write(fname, [template_hash].to_yaml)
@@ -95,7 +95,8 @@ namespace :rhconsulting do
 
     desc 'Exports all customization templates to a YAML file or directory'
     task :export, [:filename] => [:environment] do |_, arguments|
-      CustomizationTemplateImportExport.new.export(arguments[:filename])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      CustomizationTemplateImportExport.new.export(arguments[:filename], options)
     end
 
   end

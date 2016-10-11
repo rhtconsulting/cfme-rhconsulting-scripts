@@ -65,6 +65,9 @@ Available Object Types:
                                    be specified.
 ----
 
+*Note* As of version 0.9 spaces in exported filenames will be replaced with
+underscores. To preserve the old behavior 
+
 == Example exports
 ----
 # export the 'MyCustomDomain' to /tmp, i.e., /tmp/MyCustomDomain

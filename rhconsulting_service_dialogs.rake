@@ -1,16 +1,17 @@
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
+
 class ServiceDialogImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
-  def export(filedir)
+  def export(filedir, options = {})
     raise "Must supply filedir" if filedir.blank?
     dialogs_hash = export_dialogs(Dialog.order(:id).all)
     dialogs_hash.each { |x|
       data = []
       data << x
       # Replace invalid filename characters
-      # Illegal characters: '/', '|', ' '
-      # Replaced with: '_'
-      fname = x['label'].gsub(%r{[/| ]}, '_')
+      fname = MiqIllegalChars.replace(x['label'], options)
       File.write("#{filedir}/#{fname}.yml", data.to_yaml)
     }
   end
@@ -161,7 +162,8 @@ namespace :rhconsulting do
 
     desc 'Exports all service dialogs to individual YAML files'
     task :export, [:filedir] => [:environment] do |_, arguments|
-      ServiceDialogImportExport.new.export(arguments[:filedir])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      ServiceDialogImportExport.new.export(arguments[:filedir], options)
     end
 
   end

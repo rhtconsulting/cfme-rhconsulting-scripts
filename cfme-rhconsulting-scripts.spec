@@ -1,5 +1,5 @@
 Name:      cfme-rhconsulting-scripts
-Version:   0.8
+Version:   0.9
 Release:   1
 Summary:   Red Hat Consulting Scripts for CloudForms
 

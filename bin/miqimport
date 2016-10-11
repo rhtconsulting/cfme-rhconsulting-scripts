@@ -1,28 +1,49 @@
 #!/usr/bin/env bash
 
-op_domain () {
-  DOMAIN_NAME=$1
-  IMPORT_DIR=$(readlink -v -f "$2")
-
-  if [ ! -d "$IMPORT_DIR" ]
+assert_num_args () {
+  num_args_received=$1
+  num_args_expected=$2
+  if [ "$num_args_received" -ne "$num_args_expected" ]
   then
-    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
+    echo "Error: Wrong number of arguments (expected=$num_args_expected received=$num_args_received)"
+    usage
     exit 1
   fi
+}
+
+assert_import_dir_exists () {
+  import_dir=$1
+  if [ ! -d "$import_dir" ]
+  then
+    echo "Import directory doesn't exist! [${import_dir}]"
+    exit 1
+  fi
+}
+
+assert_import_file_or_dir_exists () {
+  import_file_or_dir=$1
+  if [ ! -f "$import_file_or_dir" ] && [ ! -d "$import_file_or_dir" ]
+  then
+    echo "Import file/directory doesn't exist! [${import_file_or_dir}]"
+    exit 1
+  fi
+}
+
+op_domain () {
+  assert_num_args $# 2
+  DOMAIN_NAME=$1
+  IMPORT_DIR=$(readlink -v -f "$2")
+  assert_import_dir_exists "$IMPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_NAME}, ${IMPORT_DIR}]"
+  bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_NAME},${IMPORT_DIR}]"
   popd
 }
 
 op_reports () {
+  assert_num_args $# 1
   IMPORT_DIR=$(readlink -v -f "$1")
-
-  if [ ! -d "$IMPORT_DIR" ]
-  then
-    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
-    exit 1
-  fi
+  assert_import_dir_exists "$IMPORT_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:miq_reports:import[${IMPORT_DIR}]"
@@ -30,13 +51,9 @@ op_reports () {
 }
 
 op_widgets () {
+  assert_num_args $# 1
   IMPORT_DIR=$(readlink -v -f "$1")
-
-  if [ ! -d "$IMPORT_DIR" ]
-  then
-    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
-    exit 1
-  fi
+  assert_import_dir_exists "$IMPORT_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:miq_widgets:import[${IMPORT_DIR}]"
@@ -44,27 +61,19 @@ op_widgets () {
 }
 
 op_alerts () {
+  assert_num_args $# 1  
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
-
-  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
-  then
-    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
-    exit 1
-  fi
-
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
+  
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:miq_alerts:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
 op_alertsets () {
+  assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
-
-  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
-  then
-    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
-    exit 1
-  fi
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:miq_alertsets:import[${IMPORT_FILE_OR_DIR}]"
@@ -72,13 +81,9 @@ op_alertsets () {
 }
 
 op_policies () {
+  assert_num_args $# 1
   IMPORT_DIR=$(readlink -v -f "$1")
-
-  if [ ! -d "$IMPORT_DIR" ]
-  then
-    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
-    exit 1
-  fi
+  assert_import_dir_exists "$IMPORT_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:miq_policies:import[${IMPORT_DIR}]"
@@ -86,13 +91,9 @@ op_policies () {
 }
 
 op_provision_dialogs () {
+  assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
-
-  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
-  then
-    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
-    exit 1
-  fi
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:provision_dialogs:import[${IMPORT_FILE_OR_DIR}]"
@@ -100,13 +101,9 @@ op_provision_dialogs () {
 }
 
 op_service_dialogs () {
+  assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
-
-  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
-  then
-    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
-    exit 1
-  fi
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:service_dialogs:import[${IMPORT_FILE_OR_DIR}]"
@@ -114,13 +111,9 @@ op_service_dialogs () {
 }
 
 op_service_catalogs () {
+  assert_num_args $# 1
   IMPORT_DIR=$(readlink -v -f "$1")
-
-  if [ ! -d "$IMPORT_DIR" ]
-  then
-    echo "Import directory doesn't exist! [${IMPORT_DIR}]"
-    exit 1
-  fi
+  assert_import_dir_exists "$IMPORT_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:service_catalogs:import[${IMPORT_DIR}]"
@@ -128,13 +121,9 @@ op_service_catalogs () {
 }
 
 op_roles () {
+  assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
-
-  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
-  then
-    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
-    exit 1
-  fi
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:roles:import[${IMPORT_FILE_OR_DIR}]"
@@ -142,13 +131,9 @@ op_roles () {
 }
 
 op_tags () {
+  assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
-
-  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
-  then
-    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
-    exit 1
-  fi
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:tags:import[${IMPORT_FILE_OR_DIR}]"
@@ -156,13 +141,9 @@ op_tags () {
 }
 
 op_buttons () {
+  assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
-
-  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
-  then
-    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
-    exit 1
-  fi
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:buttons:import[${IMPORT_FILE_OR_DIR}]"
@@ -170,13 +151,9 @@ op_buttons () {
 }
 
 op_customization_templates () {
+  assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
-
-  if [ ! -f "$IMPORT_FILE_OR_DIR" ] && [ ! -d "$IMPORT_FILE_OR_DIR" ]
-  then
-    echo "Import file/directory doesn't exist! [${IMPORT_FILE_OR_DIR}]"
-    exit 1
-  fi
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:customization_templates:import[${IMPORT_FILE_OR_DIR}]"
@@ -200,7 +177,8 @@ contains () {
 parse_action () {
   AVAILABLE_PARSERS=`compgen -A function | grep '^op_'`
 
-  op_func="op_$1"
+  obj_type="$1"
+  op_func="op_${obj_type}"
   contains $op_func $AVAILABLE_PARSERS; VALID_OP=$?
 
   if [ $VALID_OP -eq 0 ]
@@ -208,7 +186,9 @@ parse_action () {
     shift
     $op_func "$@"
   else
+    echo "Error: Unknown object type: $obj_type"
     usage
+    exit 1
   fi
 }
 
@@ -247,4 +227,4 @@ EOF
 }
 
 parse_action "$@"
-
+exit 0

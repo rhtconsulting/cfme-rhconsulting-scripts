@@ -1,3 +1,6 @@
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
+
 class ButtonsImportExport
 
   def import(filename)
@@ -13,7 +16,7 @@ class ButtonsImportExport
     end
   end
 
-  def export(filename)
+  def export(filename, options = {})
     raise "Must supply filename or directory" if filename.blank?
     begin
       file_type = File.ftype(filename)
@@ -43,9 +46,7 @@ class ButtonsImportExport
     elsif file_type == 'directory'
       custom_buttons_sets_hash.each do |cbs|
         # Replace characters in the name that are not allowed in filenames
-        # Illegal characters: '/', '|', ' '
-        # Replaced with: '_'
-        name = "#{cbs["name"]}".gsub(%r{[/| ]}, '_')
+        name = MiqIllegalChars.replace("#{cbs["name"]}", options)
         fname = "#{filename}/#{name}.yaml"
         File.write(fname, {:custom_buttons_sets => [cbs]}.to_yaml)
       end
@@ -268,7 +269,8 @@ namespace :rhconsulting do
 
     desc 'Exports all dialogs to a YAML file'
     task :export, [:filename] => [:environment] do |_, arguments|
-      ButtonsImportExport.new.export(arguments[:filename])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      ButtonsImportExport.new.export(arguments[:filename], options)
     end
 
   end

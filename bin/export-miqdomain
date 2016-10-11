@@ -43,7 +43,7 @@ export ()
   bin/rake rhconsulting:miq_policies:export["${BUILDDIR}/policies"]
   bin/rake rhconsulting:miq_alerts:export["${BUILDDIR}/alerts"]
   bin/rake rhconsulting:miq_alertsets:export["${BUILDDIR}/alertsets"]
-  bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN}, ${BUILDDIR}/miq_ae_datastore]"
+  bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN},${BUILDDIR}/miq_ae_datastore]"
 }
 
 

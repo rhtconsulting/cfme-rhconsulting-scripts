@@ -1,3 +1,6 @@
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
+
 class ServiceCatalogsImportExport
 
   def import(filedir)
@@ -25,7 +28,7 @@ class ServiceCatalogsImportExport
     end
   end
 
-  def export(filedir)
+  def export(filedir, options = {})
     raise "Must supply filedir" if filedir.blank?
     catalogs_hash = export_service_template_catalogs(ServiceTemplateCatalog.in_region(MiqRegion.my_region_number).order(:id).all)
     templates_hash = export_service_templates(ServiceTemplate.in_region(MiqRegion.my_region_number).order(:id).all)
@@ -42,9 +45,7 @@ class ServiceCatalogsImportExport
       data = []
       data << output
       # Replace invalid filename characters
-      # Illegal characters: '/', '|', ' '
-      # Replaced with: '_'
-      fname = output["#{catalog_name}"]['name'].gsub(%r{[/| ]}, '_')
+      fname = MiqIllegalChars.replace(output["#{catalog_name}"]['name'], options)
       File.write("#{filedir}/#{fname}.yml", data.to_yaml)
     }
   end
@@ -285,7 +286,8 @@ namespace :rhconsulting do
 
     desc 'Exports all dialogs to a YAML file'
     task :export, [:filedir] => [:environment] do |_, arguments|
-      ServiceCatalogsImportExport.new.export(arguments[:filedir])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      ServiceCatalogsImportExport.new.export(arguments[:filedir], options)
     end
 
   end
