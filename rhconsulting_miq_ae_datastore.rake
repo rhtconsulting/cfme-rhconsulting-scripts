@@ -7,6 +7,13 @@ class MiqAeDatastoreImportExport
     raise "Must supply domain name" if domain_name.blank?
     raise "Must supply import source directory" if options['import_dir'].blank?
     importer = MiqAeYamlImportFs.new(domain_name, options)
+    # Overwrite doesn't work in ManageIQ/CloudForms < 4.1 (cfme version 5.6)
+    # In these versions we have to manually delete the domain and then import.
+    # This is exactly what happens in newer versions where overwrite is fixed.
+    if options['overwrite'] && Vmdb::Appliance.VERSION < "5.6"
+      domain_obj = MiqAeDomain.find_by_name(domain_name)
+      domain_obj.destroy
+    end
     importer.import
   end
 

@@ -35,8 +35,28 @@ op_domain () {
   IMPORT_DIR=$(readlink -v -f "$2")
   assert_import_dir_exists "$IMPORT_DIR"
 
+  DOMAIN_OPTIONS=""
+  if [ ! -z $OVERWRITE ]
+  then
+    DOMAIN_OPTIONS="${DOMAIN_OPTIONS}overwrite=${OVERWRITE};"
+  fi
+  if [ ! -z $ENABLED ]
+  then
+    DOMAIN_OPTIONS="${DOMAIN_OPTIONS}enabled=${ENABLED};"
+  fi
+  if [ ! -z $TENANT_NAME ]
+  then
+    DOMAIN_OPTIONS="${DOMAIN_OPTIONS}tenant_name=${TENANT_NAME};"
+  fi
+  if [ ! -z $TENANT_ID ]
+  then
+    DOMAIN_OPTIONS="${DOMAIN_OPTIONS}tenant_id=${TENANT_ID};"
+  fi
+
+  echo "DOMAIN_OPTIONS=${DOMAIN_OPTIONS}"
+  
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_NAME},${IMPORT_DIR}]"
+  bin/rake "rhconsulting:miq_ae_datastore:import_with_options[${DOMAIN_NAME},${IMPORT_DIR},${DOMAIN_OPTIONS}]"
   popd
 }
 
@@ -174,6 +194,72 @@ contains () {
   return 1  
 }
 
+
+parse_arguments () {
+  # initialize non-required arguments before the loop in case they are
+  # not present in the command line
+  OVERWRITE="false"
+  ENABLED="true"
+  TENANT_NAME=""
+  TENANT_ID=""
+
+  # http://stackoverflow.com/questions/402377/using-getopts-in-bash-shell-script-to-get-long-and-short-command-line-options
+  # http://stackoverflow.com/questions/14786984/best-way-to-parse-cmdline-args-bash
+  while [[ $# -ge 1 ]]
+  do
+    arg="$1"
+    case "$arg" in
+      --overwrite)
+        OVERWRITE="true"
+        shift # past the argument
+        ;;
+      --no-overwrite)
+        OVERWRITE="false"
+        shift # past the argument
+        ;;
+      --enabled)
+        ENABLED="true"
+        shift # past the argument
+        ;;
+      --disabled)
+        ENABLED="false"
+        shift # past the argument
+        ;;
+      --tenant-name)
+        TENANT_NAME="$2"
+        shift # past the argument
+        shift # past the value
+        ;;
+      --tenant-name=*)
+        TENANT_NAME="${arg#*=}"
+        shift # past the argument=value
+        ;;
+      --tenant-id)
+        TENANT_ID="$2"
+        shift # past the argument
+        shift # past the value
+        ;;
+      --tenant-id=*)
+        TENANT_ID="${arg#*=}"
+        shift # past the argument=value
+        ;;
+      --)
+        shift # past the argument
+        break # stop parsing arguments
+        ;;
+      *)
+        # unknown option
+        break # stop parsing arguments
+        ;;
+    esac
+  done
+
+  # if there are any required arguments check for them here
+
+  # pass the shifted arguments back to the caller
+  remaining_args="$@"
+}
+
 parse_action () {
   AVAILABLE_PARSERS=`compgen -A function | grep '^op_'`
 
@@ -219,6 +305,35 @@ Available Object Types:
                                    <importsource> directory. <name> MUST
                                    be specified.
 
+Options:
+  --overwrite                      Overwites the imported domain if it
+                                   already exists in the database.
+                                   Only used for "domain" object type.
+                                   (Default = overwrite)
+
+  --no-overwrite                   Do NOT overwite the domain if it
+                                   already exists in the database.
+                                   Only used for "domain" object type.
+                                   (Default = overwrite)
+
+  --enabled                        Enables the domain after it is imported.
+                                   Only used for "domain" object type.
+                                   (Default = enabled)
+
+  --disabled                       Disables the domain after it is imported.
+                                   Only used for "domain" object type.
+                                   (Default = enabled)
+
+  --tenant-name=NAME               Name of the Tenant for the domain after it is
+                                   imported.
+                                   Only used for "domain" object type.
+                                   (Default = "")
+
+  --tenant-id=ID                   ID of the Tenant for the domain after it is
+                                   imported.
+                                   Only used for "domain" object type.
+                                   (Default = "")
+
 Report bugs and feature requests to
 https://github.com/rhtconsulting/cfme-rhconsulting-scripts
 
@@ -226,5 +341,6 @@ EOF
 
 }
 
-parse_action "$@"
+parse_arguments "$@"
+parse_action "$remaining_args"
 exit 0
