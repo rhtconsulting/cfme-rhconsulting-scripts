@@ -87,7 +87,7 @@ op_provision_dialogs () {
   assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake --trace "rhconsulting:provision_dialogs:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
+  bin/rake "rhconsulting:provision_dialogs:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 

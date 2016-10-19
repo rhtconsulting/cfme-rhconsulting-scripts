@@ -23,6 +23,7 @@ mkdir -p "%{buildroot}/var/www/miq/vmdb/lib/tasks"
 mkdir -p "%{buildroot}/usr/bin"
 cd %{_builddir}/%{name}
 install --backup --mode=0644 -t "%{buildroot}/var/www/miq/vmdb/lib/tasks/$f" *.rake
+install --backup --mode=0644 -t "%{buildroot}/var/www/miq/vmdb/lib/tasks/$f" *.rb
 install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/miqexport
 install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/miqimport
 install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/export-miqdomain
@@ -41,6 +42,8 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 /var/www/miq/vmdb/lib/tasks/rhconsulting_widgets.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_policies.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_alerts.rake
+/var/www/miq/vmdb/lib/tasks/rhconsulting_illegal_chars.rb
+/var/www/miq/vmdb/lib/tasks/rhconsulting_options.rb
 /usr/bin/miqexport
 /usr/bin/miqimport
 /usr/bin/export-miqdomain
@@ -49,6 +52,17 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 %post
 
 %changelog
+* Wed Oct 19 2016 Nick Maludy <nmaludy@gmail.com> 0.9
+- Added support for importing/export individual files
+- Added support for importing/exporting filenames and directories with spaces
+- Added support for importing/exporting relative paths
+- Added support for importing/exporting paths with symlinks
+- Changed export file naming behavior to replace spaces with _
+  * Note: to preserve old behavior and keep spaces the command line option
+    --keep-spaces was added
+- Added several new command line options to expose various underlying
+  functionality in miqimport
+
 * Mon Aug 15 2016 Brant Evans <bevans@redhat.com> 0.8
 - Added export/import for provisioning dialogs
 

@@ -53,6 +53,7 @@ rpm:
 	rm -rf cfme-consulting-scripts && \
 	mkdir -p cfme-rhconsulting-scripts/bin && \
 	cp *.rake cfme-rhconsulting-scripts && \
+	cp *.rb cfme-rhconsulting-scripts && \
 	cp bin/* cfme-rhconsulting-scripts/bin && \
 	tar zcf "$(TARBALL)" cfme-rhconsulting-scripts && \
 	rm -rf cfme-rhconsulting-scripts && \
