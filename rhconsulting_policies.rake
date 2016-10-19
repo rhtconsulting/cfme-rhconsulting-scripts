@@ -1,16 +1,18 @@
 # Author: Brant Evans <bevans@redhat.com>
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
 
 class MiqPoliciesImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
-  def export(export_dir)
+  def export(export_dir, options = {})
     raise "Must supply export dir" if export_dir.blank?
 
     # Export the Policy Profiles
-    export_profiles(export_dir)
+    export_profiles(export_dir, options)
 
     # Export the Policies
-    export_policies(export_dir)
+    export_policies(export_dir, options)
   end
 
   def import(import_dir)
@@ -25,19 +27,25 @@ class MiqPoliciesImportExport
 
 private
 
-  def export_policies(export_dir)
+  def export_policies(export_dir, options)
     MiqPolicy.all.each do |p|
       puts("Exporting Policy: #{p.description}")
 
-      File.write("#{export_dir}/Policy_#{p.description.gsub('/', '_')}.yaml", p.export_to_yaml)
+      # Replace invalid filename characters
+      pname = MiqIllegalChars.replace(p.description, options)
+      fname = "Policy_#{pname}.yaml"
+      File.write("#{export_dir}/#{fname}", p.export_to_yaml)
     end
   end
 
-  def export_profiles(export_dir)
+  def export_profiles(export_dir, options)
     MiqPolicySet.all.each do |p|
       puts("Exporting Policy Profile: #{p.description}")
 
-      File.write("#{export_dir}/Profile_#{p.description.gsub('/', '_')}.yaml", p.export_to_yaml)
+      # Replace invalid filename characters
+      pname = MiqIllegalChars.replace(p.description, options)
+      fname = "Profile_#{pname}.yaml"
+      File.write("#{export_dir}/#{fname}", p.export_to_yaml)
     end
   end
 
@@ -81,7 +89,8 @@ namespace :rhconsulting do
 
     desc 'Imports all policies from individual YAML files'
     task :import, [:filedir] => [:environment] do |_, arguments|
-      MiqPoliciesImportExport.new.import(arguments[:filedir])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      MiqPoliciesImportExport.new.import(arguments[:filedir], options)
     end
 
   end

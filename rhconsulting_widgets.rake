@@ -1,13 +1,15 @@
 # Author: Brant Evans <bevans@redhat.com>
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
 
 class MiqWidgetsImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
-  def export(export_dir)
+  def export(export_dir, options = {})
     raise "Must supply export dir" if export_dir.blank?
 
     # Export the Policies
-    export_widgets(export_dir)
+    export_widgets(export_dir, options)
   end
 
   def import(import_dir)
@@ -19,12 +21,12 @@ class MiqWidgetsImportExport
 
 private
 
-  def export_widgets(export_dir)
+  def export_widgets(export_dir, options)
     custom_widgets = MiqWidget.where(:read_only => "false")
     custom_widgets.each { |widget|
 
       # Set the filename and replace spaces and characters that are not allowed in filenames
-      fname = "#{widget.id}_#{widget.name}.yaml".gsub(%r{[|/]}, "_")
+      fname = MiqIllegalChars.replace("#{widget.id}_#{widget.name}.yaml", options)
 
       File.write("#{export_dir}/#{fname}", widget.export_to_array.to_yaml)
     }
@@ -54,7 +56,8 @@ namespace :rhconsulting do
 
     desc 'Exports all widgets to individual YAML files'
     task :export, [:filedir] => [:environment] do |_, arguments|
-      MiqWidgetsImportExport.new.export(arguments[:filedir])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      MiqWidgetsImportExport.new.export(arguments[:filedir], options)
     end
 
     desc 'Imports all policies from individual YAML files'

@@ -28,7 +28,7 @@ absolute_path()
 
 check_root()
 {
-  if [[ ${EUID} != 0 ]]; then
+  if [[ "${EUID}" != 0 ]]; then
     echo "Error: Run the $0 as 'root'." >&2
     exit 1
   fi
@@ -36,7 +36,7 @@ check_root()
 
 check_directory()
 {
-  if [[ ! -d ${DIR} ]]; then
+  if [[ ! -d "${DIR}" ]]; then
     echo "Error: The directory does not exist." >&2
     exit 1
   fi
@@ -45,28 +45,28 @@ check_directory()
 
 domain_name()
 {
-  DIRECTORY=`find ${DIR}/miq_ae_datastore/ -maxdepth 1 -type d | tail -1`
-  DOMAIN=`basename ${DIRECTORY}`
+  DIRECTORY=`find "${DIR}"/miq_ae_datastore/ -maxdepth 1 -type d | tail -1`
+  DOMAIN=`basename "${DIRECTORY}"`
   echo "Domain name to be imported is ${DOMAIN}"
 }
 
 import()
 {
   cd /var/www/miq/vmdb
-  bin/rake rhconsulting:provision_dialogs:import[${DIR}/provision_dialogs]
-  bin/rake rhconsulting:service_dialogs:import[${DIR}/service_dialogs]
-  bin/rake rhconsulting:roles:import[${DIR}/roles/roles.yml]
-  bin/rake rhconsulting:tags:import[${DIR}/tags/tags.yml]
-  bin/rake rhconsulting:buttons:import[${DIR}/buttons/buttons.yml]
-  bin/rake rhconsulting:customization_templates:import[${DIR}/customization_templates/customization_templates.yml]
-  bin/rake rhconsulting:miq_policies:import[${DIR}/policies]
-  bin/rake rhconsulting:miq_alerts:import[${DIR}/alerts]
-  bin/rake rhconsulting:miq_alertsets:import[${DIR}/alertsets]
-  bin/rake rhconsulting:service_catalogs:import[${DIR}/service_catalogs]
-  bin/rake rhconsulting:miq_reports:import[${DIR}/reports]
-  bin/rake rhconsulting:miq_widgets:import[${DIR}/widgets]
-  bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN}, ${DIR}/miq_ae_datastore]"
-  bin/rake rhconsulting:service_catalogs:import[${DIR}/service_catalogs]
+  bin/rake rhconsulting:provision_dialogs:import["${DIR}"/provision_dialogs]
+  bin/rake rhconsulting:service_dialogs:import["${DIR}"/service_dialogs]
+  bin/rake rhconsulting:roles:import["${DIR}"/roles/roles.yml]
+  bin/rake rhconsulting:tags:import["${DIR}"/tags/tags.yml]
+  bin/rake rhconsulting:buttons:import["${DIR}"/buttons/buttons.yml]
+  bin/rake rhconsulting:customization_templates:import["${DIR}"/customization_templates/customization_templates.yml]
+  bin/rake rhconsulting:miq_policies:import["${DIR}"/policies]
+  bin/rake rhconsulting:miq_alerts:import["${DIR}"/alerts]
+  bin/rake rhconsulting:miq_alertsets:import["${DIR}"/alertsets]
+  bin/rake rhconsulting:service_catalogs:import["${DIR}"/service_catalogs]
+  bin/rake rhconsulting:miq_reports:import["${DIR}"/reports]
+  bin/rake rhconsulting:miq_widgets:import["${DIR}"/widgets]
+  bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN},${DIR}/miq_ae_datastore]"
+  bin/rake rhconsulting:service_catalogs:import["${DIR}"/service_catalogs]
 }
 
 
@@ -79,7 +79,7 @@ while getopts "D:,:h" opts; do
       exit 1
       ;;
     D)
-      DIR=${OPTARG}
+      DIR="${OPTARG}"
       ;;
     \?)
       echo "Invalid option -$OPTARG" >&2
@@ -94,7 +94,7 @@ while getopts "D:,:h" opts; do
   esac
 done
 
-if [[ -z ${DIR} ]]; then
+if [[ -z "${DIR}" ]]; then
   usage
   exit 1
 fi

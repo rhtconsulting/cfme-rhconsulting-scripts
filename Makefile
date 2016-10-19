@@ -1,5 +1,5 @@
-VERSION := 0.8
-RELEASE := 2
+VERSION := 0.9
+RELEASE := 1
 
 .PHONY: clean rpm install clean-install
 
@@ -16,6 +16,8 @@ rm-installed-files:
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_widgets.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_policies.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_alerts.rake
+	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_illegal_chars.rb
+	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_options.rb
 	rm -f /usr/bin/miqexport
 	rm -f /usr/bin/miqimport
 	rm -f /usr/bin/export-miqdomain
@@ -34,13 +36,16 @@ install:
 	install -Dm644 rhconsulting_widgets.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_widgets.rake
 	install -Dm644 rhconsulting_policies.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_policies.rake
 	install -Dm644 rhconsulting_alerts.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_alerts.rake
+	install -Dm644 rhconsulting_illegal_chars.rb /var/www/miq/vmdb/lib/tasks/rhconsulting_illegal_chars.rb
+	install -Dm644 rhconsulting_options.rb /var/www/miq/vmdb/lib/tasks/rhconsulting_options.rb
 	install -Dm755 bin/miqexport /usr/bin/miqexport
 	install -Dm755 bin/miqimport /usr/bin/miqimport
 	install -Dm755 bin/export-miqdomain /usr/bin/export-miqdomain
 	install -Dm755 bin/import-miqdomain /usr/bin/import-miqdomain
 
-clean-install: rm-installed-files install
+uninstall: rm-installed-files
 
+clean-install: rm-installed-files install
 
 TARBALL := $(shell rpmbuild -E %{_sourcedir})/cfme-rhconsulting-scripts-$(VERSION)-$(RELEASE).tar.gz
 
@@ -48,6 +53,7 @@ rpm:
 	rm -rf cfme-consulting-scripts && \
 	mkdir -p cfme-rhconsulting-scripts/bin && \
 	cp *.rake cfme-rhconsulting-scripts && \
+	cp *.rb cfme-rhconsulting-scripts && \
 	cp bin/* cfme-rhconsulting-scripts/bin && \
 	tar zcf "$(TARBALL)" cfme-rhconsulting-scripts && \
 	rm -rf cfme-rhconsulting-scripts && \

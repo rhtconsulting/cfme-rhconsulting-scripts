@@ -1,70 +1,70 @@
 #!/usr/bin/env bash
 
-op_domain () {
-  DOMAIN_NAME=$1
-  EXPORT_DIR=$2
-
-  if [ ! -d $EXPORT_DIR ]
+assert_num_args () {
+  num_args_received=$1
+  num_args_expected=$2
+  if [ "$num_args_received" -ne "$num_args_expected" ]
   then
-    echo "Export directory doesn't exist!"
+    echo "Error: Wrong number of arguments (expected=$num_args_expected received=$num_args_received)"
+    usage
     exit 1
   fi
+}
 
+assert_export_dir_exists () {
+  export_dir=$1
+  if [ ! -d "$export_dir" ]
+  then
+    echo "Export directory doesn't exist! [${export_dir}]"
+    exit 1
+  fi
+}
+
+op_domain () {
+  assert_num_args $# 2
+  DOMAIN_NAME=$1
+  EXPORT_DIR=$(readlink -v -f "$2")
+  assert_export_dir_exists "$EXPORT_DIR"
+  
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_NAME}, ${EXPORT_DIR}]"
+  bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_NAME},${EXPORT_DIR}]"
   popd
 }
 
 op_reports () {
-  EXPORT_DIR=$1
-
-  if [ ! -d $EXPORT_DIR ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
-
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
+  
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_reports:export[${EXPORT_DIR}]"
+  bin/rake "rhconsulting:miq_reports:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_widgets () {
-  EXPORT_DIR=$1
-
-  if [ ! -d $EXPORT_DIR ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
-
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
+  
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_widgets:export[${EXPORT_DIR}]"
+  bin/rake "rhconsulting:miq_widgets:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_alerts () {
-  EXPORT_DIR=$1
-
-  if [ ! -d $EXPORT_DIR ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
-
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
+  
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_alerts:export[${EXPORT_DIR}]"
+  bin/rake "rhconsulting:miq_alerts:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_alertsets () {
-  EXPORT_DIR=$1
-
-  if [ ! -d $EXPORT_DIR ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:miq_alertsets:export[${EXPORT_DIR}]"
@@ -72,114 +72,86 @@ op_alertsets () {
 }
 
 op_policies () {
-  EXPORT_DIR=$1
-
-  if [ ! -d $EXPORT_DIR ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:miq_policies:export[${EXPORT_DIR}]"
+  bin/rake "rhconsulting:miq_policies:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_provision_dialogs () {
-  EXPORT_DIR=$1
-
-  if [ ! -d $EXPORT_DIR ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:provision_dialogs:export[${EXPORT_DIR}]"
+  bin/rake "rhconsulting:provision_dialogs:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_service_dialogs () {
-  EXPORT_DIR=$1
-
-  if [ ! -d $EXPORT_DIR ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:service_dialogs:export[${EXPORT_DIR}]"
+  bin/rake "rhconsulting:service_dialogs:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_service_catalogs () {
-  EXPORT_DIR=$1
-
-  if [ ! -d $EXPORT_DIR ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:service_catalogs:export[${EXPORT_DIR}]"
+  bin/rake "rhconsulting:service_catalogs:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_roles () {
-  EXPORT_FILE=$1
-
-  if [ ! -d `dirname $EXPORT_FILE` ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_FILE=$(readlink -v -f "$1")
+  EXPORT_DIR=$(dirname "$EXPORT_FILE")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:roles:export[${EXPORT_FILE}]"
+  bin/rake "rhconsulting:roles:export[${EXPORT_FILE},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_tags () {
-  EXPORT_FILE=$1
-
-  if [ ! -d `dirname $EXPORT_FILE` ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_FILE=$(readlink -v -f "$1")
+  EXPORT_DIR=$(dirname "$EXPORT_FILE")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:tags:export[${EXPORT_FILE}]"
+  bin/rake "rhconsulting:tags:export[${EXPORT_FILE},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_buttons () {
-  EXPORT_FILE=$1
-
-  if [ ! -d `dirname $EXPORT_FILE` ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_FILE=$(readlink -v -f "$1")
+  EXPORT_DIR=$(dirname "$EXPORT_FILE")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:buttons:export[${EXPORT_FILE}]"
+  bin/rake "rhconsulting:buttons:export[${EXPORT_FILE},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
 op_customization_templates () {
-  EXPORT_FILE=$1
-
-  if [ ! -d `dirname $EXPORT_FILE` ]
-  then
-    echo "Export directory doesn't exist!"
-    exit 1
-  fi
+  assert_num_args $# 1
+  EXPORT_FILE=$(readlink -v -f "$1")
+  EXPORT_DIR=$(dirname "$EXPORT_FILE")
+  assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:customization_templates:export[${EXPORT_FILE}]"
+  bin/rake "rhconsulting:customization_templates:export[${EXPORT_FILE},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
@@ -197,18 +169,53 @@ contains () {
   return 1  
 }
 
+parse_arguments () {
+  # initialize non-required arguments before the loop in case they are
+  # not present in the command line
+  KEEP_SPACES="false"
+
+  # http://stackoverflow.com/questions/402377/using-getopts-in-bash-shell-script-to-get-long-and-short-command-line-options
+  # http://stackoverflow.com/questions/14786984/best-way-to-parse-cmdline-args-bash
+  while [[ $# -ge 1 ]]
+  do
+    arg="$1"
+    case "$arg" in
+      -s|--keep-spaces)
+        KEEP_SPACES="true"
+        shift # past the argument
+        ;;
+      --)
+        shift # past the argument
+        break # stop parsing arguments
+        ;;
+      *)
+        # unknown option
+        break # stop parsing arguments
+        ;;
+    esac
+  done
+
+  # if there are any required arguments check for them here
+
+  # pass the shifted arguments back to the caller
+  remaining_args="$@"
+}
+
 parse_action () {
   AVAILABLE_PARSERS=`compgen -A function | grep '^op_'`
 
-  op_func="op_$1"
+  obj_type="$1"
+  op_func="op_${obj_type}"
   contains $op_func $AVAILABLE_PARSERS; VALID_OP=$?
 
   if [ $VALID_OP -eq 0 ]
   then
     shift
-    $op_func $@
+    $op_func "$@"
   else
+    echo "Error: Unknown object type: $obj_type"
     usage
+    exit 1
   fi
 }
 
@@ -216,7 +223,7 @@ usage () {
 progname=`basename $0`
 
   cat << EOF
-Usage: $progname <object_type> <additional_params> <exportdest>
+Usage: $progname [OPTION...] <object_type> <additional_params> <exportdest>
 
 This command exports the specified object type into the <exportdest>,
 which may be a file or directory.
@@ -241,6 +248,11 @@ Available Object Types:
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
 
+Options:
+  -s, --keep-spaces                Export filenames with spaces instead of
+                                   replacing the spaces with underscores.
+                                   (this preserves old behavior)
+
 Report bugs and feature requests to
 https://github.com/rhtconsulting/cfme-rhconsulting-scripts
 
@@ -248,5 +260,6 @@ EOF
 
 }
 
-parse_action "$@"
-
+parse_arguments "$@"
+parse_action "$remaining_args"
+exit 0

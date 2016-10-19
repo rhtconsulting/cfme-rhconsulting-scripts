@@ -1,3 +1,6 @@
+require_relative 'rhconsulting_illegal_chars'
+require_relative 'rhconsulting_options'
+
 class RoleImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
@@ -16,7 +19,7 @@ class RoleImportExport
     end
   end
 
-  def export(filename)
+  def export(filename, options = {})
     raise "Must supply filename or directory" if filename.blank?
     begin
       file_type = File.ftype(filename)
@@ -32,8 +35,8 @@ class RoleImportExport
     elsif file_type == 'directory'
       roles_array.each do |role_hash|
         role_name = role_hash["name"]
-        role_name = role_name.gsub('/', '_')
-        role_name = role_name.gsub('|', '_')
+        # Replace invalid filename characters
+        role_name = MiqIllegalChars.replace(role_name, options)
         fname = "#{filename}/#{role_name}.yaml"
         File.write(fname, [role_hash].to_yaml)
       end
@@ -87,7 +90,8 @@ namespace :rhconsulting do
 
     desc 'Exports all roles to a YAML file or directory'
     task :export, [:filename] => [:environment] do |_, arguments|
-      RoleImportExport.new.export(arguments[:filename])
+      options = RhconsultingOptions.parse_options(arguments.extras)
+      RoleImportExport.new.export(arguments[:filename], options)
     end
 
   end
