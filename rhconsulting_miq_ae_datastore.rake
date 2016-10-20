@@ -12,7 +12,7 @@ class MiqAeDatastoreImportExport
     # This is exactly what happens in newer versions where overwrite is fixed.
     if options['overwrite'] && Vmdb::Appliance.VERSION < "5.6"
       domain_obj = MiqAeDomain.find_by_name(domain_name)
-      domain_obj.destroy
+      domain_obj.destroy if domain_obj
     end
     importer.import
   end
