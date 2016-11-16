@@ -84,12 +84,12 @@ namespace :rhconsulting do
 
     desc 'Exports all policies to individual YAML files'
     task :export, [:filedir] => [:environment] do |_, arguments|
+      options = RhconsultingOptions.parse_options(arguments.extras)
       MiqPoliciesImportExport.new.export(arguments[:filedir], options)
     end
 
     desc 'Imports all policies from individual YAML files'
     task :import, [:filedir] => [:environment] do |_, arguments|
-      options = RhconsultingOptions.parse_options(arguments.extras)
       MiqPoliciesImportExport.new.import(arguments[:filedir])
     end
 
