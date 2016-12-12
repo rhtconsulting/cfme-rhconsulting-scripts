@@ -26,6 +26,14 @@ check_root()
   fi
 }
 
+absolute_path()
+{
+  if [[ "${BUILDDIR:0:1}" != "/" ]]; then
+    echo "Error: The path to the directory needs to be an Absolute path."
+    exit 1
+  fi
+}
+
 export ()
 {
   mkdir -p "${BUILDDIR}"/{provision_dialogs,service_catalogs,service_dialogs,roles,tags,buttons,customization_templates,reports,widgets,policies,alerts,alertsets,miq_ae_datastore}
@@ -81,6 +89,9 @@ fi
 
 # Check for the user 'root'
 check_root
+
+# Check for absolute path
+absolute_path
 
 # Confirm before proceeding and then run the export.
 echo "The domain is ${DOMAIN}"
