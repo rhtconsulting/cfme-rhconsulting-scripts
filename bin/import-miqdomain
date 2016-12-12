@@ -53,20 +53,119 @@ domain_name()
 import()
 {
   cd /var/www/miq/vmdb
-  bin/rake rhconsulting:provision_dialogs:import["${DIR}"/provision_dialogs]
-  bin/rake rhconsulting:service_dialogs:import["${DIR}"/service_dialogs]
-  bin/rake rhconsulting:roles:import["${DIR}"/roles/roles.yml]
-  bin/rake rhconsulting:tags:import["${DIR}"/tags/tags.yml]
-  bin/rake rhconsulting:buttons:import["${DIR}"/buttons/buttons.yml]
-  bin/rake rhconsulting:customization_templates:import["${DIR}"/customization_templates/customization_templates.yml]
-  bin/rake rhconsulting:miq_policies:import["${DIR}"/policies]
-  bin/rake rhconsulting:miq_alerts:import["${DIR}"/alerts]
-  bin/rake rhconsulting:miq_alertsets:import["${DIR}"/alertsets]
-  bin/rake rhconsulting:service_catalogs:import["${DIR}"/service_catalogs]
-  bin/rake rhconsulting:miq_reports:import["${DIR}"/reports]
-  bin/rake rhconsulting:miq_widgets:import["${DIR}"/widgets]
-  bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN},${DIR}/miq_ae_datastore]"
-  bin/rake rhconsulting:service_catalogs:import["${DIR}"/service_catalogs]
+
+  src="${DIR}/provision_dialogs"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:provision_dialogs:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+  src="${DIR}/service_dialogs"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:service_dialogs:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+  src="${DIR}/roles/roles.yml"
+  if [ -f "${src}" ]; then
+    echo "Importing ${src} file..."
+    bin/rake rhconsulting:roles:import[${src}]
+  else
+    echo "Skipping ${src} file as it does not exist."
+  fi
+
+  src="${DIR}/tags/tags.yml"
+  if [ -f "${src}" ]; then
+    echo "Importing ${src} file..."
+    bin/rake rhconsulting:tags:import[${src}]
+  else
+    echo "Skipping ${src} file as it does not exist."
+  fi
+
+  src="${DIR}/buttons/buttons.yml"
+  if [ -f "${src}" ]; then
+    echo "Importing ${src} file..."
+    bin/rake rhconsulting:buttons:import[${src}]
+  else
+    echo "Skipping ${src} file as it does not exist."
+  fi
+
+  src="${DIR}/customization_templates/customization_templates.yml"
+  if [ -f "${src}" ]; then
+    echo "Importing ${src} file..."
+    bin/rake rhconsulting:customization_templates:import[${src}]
+  else
+    echo "Skipping ${src} file as it does not exist."
+  fi
+
+  src="${DIR}/policies"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:miq_policies:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+  src="${DIR}/alerts"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:miq_alerts:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+  src="${DIR}/alertsets"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:miq_alertsets:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+  src="${DIR}/service_catalogs"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:service_catalogs:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+  src="${DIR}/reports"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:miq_reports:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+  src="${DIR}/widgets"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:miq_widgets:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+  src="${DIR}/service_catalogs"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:service_catalogs:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
+
+  src="${DIR}/miq_ae_datastore"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN}, ${src}]"
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
 }
 
 
