@@ -1,17 +1,17 @@
 Name:      cfme-rhconsulting-scripts
-Version:   0.9
+Version:   0.10
 Release:   1
 Summary:   Red Hat Consulting Scripts for CloudForms
 
 Group:     Applications/System
 License:   GPLv3+
-URL:       https://github.com/jsimonelli/%{name}
+URL:       https://github.com/rhtconsulting/%{name}
 Source:    %{name}-%{version}-%{release}.tar.gz
 
 BuildArch: noarch
 
 %description
-These scripts are useful to import/export specific items.
+Export and import customisations for CloudForms / ManageIQ.
 
 %prep
 %autosetup -n %{name}
@@ -52,6 +52,10 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 %post
 
 %changelog
+* Wed Dec 12 2016 Andrew Spurrier <andrew.spurrier@redhat.com> 0.10-1
+- Added check that the user supplied an absolute path.
+- Added checks to each import to only attempt the import if there is a file to import from.
+
 * Wed Oct 19 2016 Nick Maludy <nmaludy@gmail.com> 0.9
 - Added support for importing/export individual files
 - Added support for importing/exporting filenames and directories with spaces
