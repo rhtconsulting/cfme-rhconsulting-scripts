@@ -29,7 +29,15 @@ class TagImportExport
     end
 
     if file_type == 'file'
-      File.write(filename, Classification.export_to_yaml)
+      File.open(filename, 'w') {|file| 
+        Classification.where(:parent_id => "0").each do |category| 
+          # Skip exporting classifications where 
+          #   the classification does not show in the Web UI 
+          next if SPECIAL_TAGS.include?(category.name) 
+ 
+          file.write(category.export_to_yaml) 
+        end 
+      } 
     elsif file_type == 'directory'
       Classification.where(:parent_id => "0").each do |category|
         # Skip exporting classifications where
@@ -53,9 +61,13 @@ private
   UPDATE_FIELDS = ['description', 'example_text', 'show', 'perf_by_tag']
 
   def import_file(filename)
-    classifications = YAML.load_file(filename)
-    Classification.transaction do
-      import_classifications(classifications)
+    # One file can contain multiple YAML documents
+    File.open(filename) do |file| 
+      YAML.load_stream(file) do |classifications| 
+        Classification.transaction do 
+          import_classifications(classifications) 
+        end 
+      end 
     end
   end
 
