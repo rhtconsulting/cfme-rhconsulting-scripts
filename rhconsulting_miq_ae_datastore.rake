@@ -70,7 +70,7 @@ namespace :rhconsulting do
           # Tenant find_by_name does not work for the root tenant. In some
           # places it is renamed as in the display, but in others like
           # find_by_name it stays 'My Company'
-          tenant = Tenant.all.find { |t| t.name == tenant_name }
+          tenant = Tenant.all.find { |t| t.name == value }
           raise "Tenant #{value} not found." unless tenant
           options['tenant_id'] = tenant.id
         when 'tenant_id', 'import_as'
