@@ -31,10 +31,11 @@ make clean-install
 ----
 
 Option 2) Copy files manually
-* Copy the .rake files to /var/www/miq/vmdb/lib/tasks
+* Copy the .rake and *.rb files to /var/www/miq/vmdb/lib/tasks
 ----
 cd cfme-rhconsulting-scripts/
 cp *.rake /var/www/miq/vmdb/lib/tasks/
+cp *.rb /var/www/miq/vmdb/lib/tasks/
 ----
 
 == Export command
