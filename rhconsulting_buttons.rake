@@ -227,7 +227,7 @@ class ButtonsImportExport
     custom_button_sets.collect do |custom_button_set|
       attributes = custom_button_set.attributes.slice(
           'name', 'description', 'set_type', 'read_only', 'mode')
-      attributes['custom_buttons'] = export_custom_buttons(custom_button_set.custom_buttons)
+      attributes['custom_buttons'] = export_custom_buttons(custom_button_set.custom_buttons).sort_by { |button| button['name']}
       attributes['set_data'] = export_custom_button_set_data(custom_button_set.set_data)
       attributes
     end
