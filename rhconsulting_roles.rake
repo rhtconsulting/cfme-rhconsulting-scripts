@@ -64,7 +64,7 @@ private
   def export_roles(roles)
     roles.collect do |role|
       next if role.read_only?
-      included_attributes(role.attributes, ["created_at", "id", "updated_at"]).merge('feature_identifiers' => role.feature_identifiers)
+      included_attributes(role.attributes, ["created_at", "id", "updated_at"]).merge('feature_identifiers' => role.feature_identifiers.sort)
     end.compact
   end
 
