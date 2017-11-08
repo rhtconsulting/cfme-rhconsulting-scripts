@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+#STFU
+pushd () {
+    command pushd "$@" > /dev/null
+}
+
+popd () {
+    command popd "$@" > /dev/null
+}
+
 assert_num_args () {
   num_args_received=$1
   num_args_expected=$2
@@ -18,6 +27,81 @@ assert_export_dir_exists () {
     echo "Export directory doesn't exist! [${export_dir}]"
     exit 1
   fi
+}
+
+mkdir_if_needed() {
+  if [ ! -d "$1" ]
+  then
+    mkdir "$1"
+  fi
+}
+
+op_all () {
+  echo "Exporting everything to []"
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+
+  echo "Exporting everything to [$EXPORT_DIR]"
+
+  mkdir_if_needed $EXPORT_DIR
+  
+  pushd $EXPORT_DIR
+
+  mkdir_if_needed "provision_dialogs"
+  op_provision_dialogs provision_dialogs &
+
+  mkdir_if_needed "service_dialogs"
+  op_service_dialogs service_dialogs &
+  
+  mkdir_if_needed "service_catalogs"
+  op_service_catalogs service_catalogs &
+
+  mkdir_if_needed "roles"
+  op_roles roles &
+
+  mkdir_if_needed "tags"
+  op_tags tags &
+
+  mkdir_if_needed "buttons"
+  op_buttons buttons &
+
+  mkdir_if_needed "customization_templates"
+  op_customization_templates customization_templates &
+
+  mkdir_if_needed "reports"
+  op_reports reports &
+
+  mkdir_if_needed "widgets"
+  op_widgets widgets &
+
+  mkdir_if_needed "alerts"
+  op_alerts alerts &
+
+  mkdir_if_needed "alertsets"
+  op_alertsets alertsets &
+
+  mkdir_if_needed "policies"
+  op_policies policies &
+
+  mkdir_if_needed "automate"
+  pushd "automate"
+  DOMAIN_ROOT_DIR=`pwd`
+  pushd /var/www/miq/vmdb
+  DOMAINS=$(bin/rake evm:automate:list_class |tail -n+3 |cut -d/ -f2 -|sed 's|/||'|sort|uniq)
+
+  while read -r DOMAIN; do
+    DOMAINDIR=$(readlink -v -f "$DOMAIN_ROOT_DIR/$DOMAIN")
+    mkdir_if_needed $DOMAINDIR
+    op_domain $DOMAIN $DOMAINDIR &
+  done <<< "$DOMAINS"
+
+  popd
+
+  for job in `jobs -p` 
+  do
+    echo "waiting on background job: [$job]"
+    wait $job
+  done
 }
 
 op_domain () {
@@ -247,6 +331,7 @@ Available Object Types:
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
+  all <target_dir>                 Export everything to target_dir
 
 Options:
   -s, --keep-spaces                Export filenames with spaces instead of
