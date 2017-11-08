@@ -37,7 +37,6 @@ mkdir_if_needed() {
 }
 
 op_all () {
-  echo "Exporting everything to []"
   assert_num_args $# 1
   EXPORT_DIR=$(readlink -v -f "$1")
 
@@ -87,11 +86,11 @@ op_all () {
   pushd "automate"
   DOMAIN_ROOT_DIR=`pwd`
   pushd /var/www/miq/vmdb
-  DOMAINS=$(bin/rake evm:automate:list_class |tail -n+3 |cut -d/ -f2 -|sed 's|/||'|sort|uniq)
+  DOMAINS=$(bin/rake evm:automate:list_class |tail -n+3 |cut -d/ -f2 -|sed 's|/||'|egrep -v 'ManageIQ|RedHat'|sort|uniq)
 
   while read -r DOMAIN; do
-    DOMAINDIR=$(readlink -v -f "$DOMAIN_ROOT_DIR/$DOMAIN")
-    mkdir_if_needed $DOMAINDIR
+    DOMAINDIR=$(readlink -v -f "$DOMAIN_ROOT_DIR")
+    mkdir_if_needed $DOMAINDIR/$DOMAIN
     op_domain $DOMAIN $DOMAINDIR &
   done <<< "$DOMAINS"
 
