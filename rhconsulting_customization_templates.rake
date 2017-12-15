@@ -54,7 +54,12 @@ private
   def import_customization_templates(customization_templates)
     begin
       customization_templates.each do |ct|
-        customization_template = CustomizationTemplate.create(ct)
+        exist = CustomizationTemplate.where("system is not true and name = '#{ct['name']}'").count
+        if exist > 0
+          puts "Template #{ct['name']} already exists"
+        else
+          customization_template = CustomizationTemplate.create(ct)
+        end
       end
     rescue
       raise ParsedNonDialogYamlError
