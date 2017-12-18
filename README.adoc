@@ -8,6 +8,17 @@ rake might choose the wrong task to run**
 
 IMPORTANT: Exporting and importing of widgets requires CloudForms 4.1 or ManageIQ Darga or greater releases.
 
+[NOTE]
+====
+These scripts are being migrated to be included with ManageIQ.
+
+ManageIQ Tracking Issue: https://github.com/ManageIQ/manageiq/issues/15350
+
+Scripts in this repo that are now depricated:
+
+* rhconsulting_alerts.rake
+====
+
 == Install
 
 Option 1) use make commands
@@ -64,7 +75,7 @@ Available Object Types:
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
-                                   
+
 Options:
   -s, --keep-spaces                Export filenames with spaces instead of
                                    replacing the spaces with underscores.
