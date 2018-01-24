@@ -86,7 +86,7 @@ op_all () {
   pushd "automate"
   DOMAIN_ROOT_DIR=`pwd`
   pushd /var/www/miq/vmdb
-  DOMAINS=$(bin/rake evm:automate:list_class |tail -n+3 |cut -d/ -f2 -|sed 's|/||'|egrep -v 'ManageIQ|RedHat'|sort|uniq)
+  DOMAINS=$(bin/rake evm:automate:list_class |tail -n+3 |cut -d/ -f2 -|sed 's|/||'|egrep -v '^(ManageIQ|RedHat)$'|sort|uniq)
 
   while read -r DOMAIN; do
     DOMAINDIR=$(readlink -v -f "$DOMAIN_ROOT_DIR")
