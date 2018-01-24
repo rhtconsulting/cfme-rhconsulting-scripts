@@ -82,6 +82,9 @@ op_all () {
   mkdir_if_needed "policies"
   op_policies policies &
 
+  mkdir_if_needed "scanitems"
+  op_scanitems scanitems &
+
   mkdir_if_needed "automate"
   pushd "automate"
   DOMAIN_ROOT_DIR=`pwd`
@@ -163,6 +166,17 @@ op_policies () {
   bin/rake "rhconsulting:miq_policies:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
+
+op_scanitems () {
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_scanprofiles:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
+  popd
+}
+
 
 op_provision_dialogs () {
   assert_num_args $# 1
@@ -327,6 +341,7 @@ Available Object Types:
   alerts                           Export alerts.
   alertsets                        Export alert sets.
   policies                         Export policies.
+  scanitems                        Export scanitems.
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
