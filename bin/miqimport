@@ -180,6 +180,36 @@ op_customization_templates () {
   popd
 }
 
+op_all () {
+  assert_num_args $# 1
+  IMPORT_DIR=$(readlink -v -f "$1")
+
+  echo "Importing everything from [$IMPORT_DIR]"
+  for dir in $IMPORT_DIR/*
+  do
+    obj_type="$(basename $dir)"
+    if [ "$obj_type" = "automate" ] ; then
+      # Handle automate domains
+      for domdir in $dir/*
+      do
+	[ ! -d "$domdir" ] && continue || :
+	op_domain "$(basename $domdir)" "$domdir"
+      done
+      continue
+    fi
+    op_func="op_${obj_type}"
+    contains $op_func $AVAILABLE_PARSERS; VALID_OP=$?
+
+    if [ $VALID_OP -eq 0 ]
+    then
+      $op_func "$dir"
+    else
+      echo "Skipping $dir"
+    fi
+  done
+  
+}
+
 contains () {
   SEARCH_TERM=$1
   shift
