@@ -26,14 +26,14 @@ private
     ScanItemSet.all.each do |p|
       # Skip read only entries
       if p.read_only 
-	next
+        next
       end
       # Also skip any entries that are using file defaults...
       uses_files = false
       p.members.each do |m|
-	if m.filename
-	  uses_files = true
-	end
+        if m.filename
+          uses_files = true
+        end
       end
       if uses_files
         next
@@ -68,37 +68,37 @@ private
       hash.delete("definition")
       profile = ScanItemSet.find_by(:name => hash["name"]);
       if profile.nil?
-	if hash["guid"].nil?
-	  hash["guid"] = SecureRandom.uuid
-	end
-	profile = ScanItemSet.new(hash)
+        if hash["guid"].nil?
+          hash["guid"] = SecureRandom.uuid
+        end
+        profile = ScanItemSet.new(hash)
       else
-	profile.attributes = hash
+        profile.attributes = hash
       end
       profile.save!
       
       # Delete existing members
       profile.members.each do |one|
-	if one.filename
-	  # OK, this was defined through yaml file... just skip it
-	  next
-	  #profile.delete(one)
-	else
-	  one.destroy
-	end
+        if one.filename
+          # OK, this was defined through yaml file... just skip it
+          next
+          #profile.delete(one)
+        else
+          one.destroy
+        end
       end
       items.each do |i|
-	if i['filename']
-	  # OK, this rules refers to a file, just use it...
-	  next
-	else
-	  if i['guid'].nil?
-	    i['guid'] = SecureRandom.uuid
-	  end
-	  #puts i.inspect
-	  si = ScanItem.create(i)
-	end
-	profile.add_member(si)
+        if i['filename']
+          # OK, this rules refers to a file, just use it...
+          next
+        else
+          if i['guid'].nil?
+            i['guid'] = SecureRandom.uuid
+          end
+          #puts i.inspect
+          si = ScanItem.create(i)
+        end
+        profile.add_member(si)
       end
     end
   end
