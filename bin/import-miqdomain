@@ -110,6 +110,14 @@ import()
     echo "Skipping ${src} directory as it does not exist."
   fi
 
+  src="${DIR}/scanitems"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:miq_scanprofiles:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
   src="${DIR}/alerts"
   if [ -d "${src}" ]; then
     echo "Importing ${src} directory..."

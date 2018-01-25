@@ -110,6 +110,16 @@ op_policies () {
   popd
 }
 
+op_scanitems () {
+  assert_num_args $# 1
+  IMPORT_DIR=$(readlink -v -f "$1")
+  assert_import_dir_exists "$IMPORT_DIR"
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_scanprofiles:import[${IMPORT_DIR}]"
+  popd
+}
+
 op_provision_dialogs () {
   assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
@@ -331,6 +341,7 @@ Available Object Types:
   reports                          Import custom reports.
   widgets                          Import custom widgets.
   policies                         Import policies.
+  scanitems                        Import scanitems.
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.

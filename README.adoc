@@ -72,6 +72,7 @@ Available Object Types:
   alerts                           Export alerts.
   alertsets                        Export alert sets.
   policies                         Export policies.
+  scanitems                        Export scan items.
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
@@ -119,6 +120,7 @@ Available Object Types:
   alerts                           Import alerts.
   alertsets                        Import alert sets.
   policies                         Import policies.
+  scanitems                        Import scan items.
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.
@@ -152,7 +154,7 @@ BUILDDIR=/tmp/CFME-build
 DOMAIN_EXPORT=YourDomainHere
 
 rm -fR ${BUILDDIR}
-mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,policies,alerts,alertsets,widgets,miq_ae_datastore}
+mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,policies,alerts,alertsets,widgets,miq_ae_datastore,scanitems}
 
 cd /var/www/miq/vmdb
 bin/rake rhconsulting:provision_dialogs:export[${BUILDDIR}/provision_dialogs]
@@ -166,7 +168,9 @@ bin/rake rhconsulting:miq_policies:export[${BUILDDIR}/policies]
 bin/rake rhconsulting:miq_alerts:export[${BUILDDIR}/alerts]
 bin/rake rhconsulting:miq_alertsets:export[${BUILDDIR}/alertsets]
 bin/rake rhconsulting:miq_widgets:export[${BUILDDIR}/widgets]
+bin/rake rhconsulting:miq_scanprofiles:export[${BUILDDIR}/scanitems]
 bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN_EXPORT}, ${BUILDDIR}/miq_ae_datastore]"
+
 ----
 
 == Import examples using rake
@@ -203,6 +207,8 @@ bin/rake rhconsulting:miq_widgets:import[${BUILDDIR}/widgets]
 bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
 bin/rake "rhconsulting:miq_ae_datastore:import[${DOMAIN_IMPORT}, ${BUILDDIR}/miq_ae_datastore]"
 bin/rake rhconsulting:service_catalogs:import[${BUILDDIR}/service_catalogs]
+bin/rake rhconsulting:miq_scanprofiles:import[${BUILDDIR}/scanitems]
+
 ----
 
 NOTE: Service Catalogs should be imported last as they reference Dialogs and the Automate Domain(s).
