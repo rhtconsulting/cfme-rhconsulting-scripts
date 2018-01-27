@@ -1,5 +1,5 @@
 Name:      cfme-rhconsulting-scripts
-Version:   0.10
+Version:   0.11
 Release:   1
 Summary:   Red Hat Consulting Scripts for CloudForms
 
@@ -34,6 +34,7 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 /var/www/miq/vmdb/lib/tasks/rhconsulting_miq_ae_datastore.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_tags.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_customization_templates.rake
+/var/www/miq/vmdb/lib/tasks/rhconsulting_orchestration_templates.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_roles.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_provision_dialogs.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_service_dialogs.rake
@@ -53,6 +54,10 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 %post
 
 %changelog
+* Fri Jan 26 2017 Jeffrey Cutter <jcutter@redhat.com>  0.11-1
+- Added support for customization specifications.
+
+
 * Wed Dec 12 2016 Andrew Spurrier <andrew.spurrier@redhat.com> 0.10-1
 - Added check that the user supplied an absolute path.
 - Added checks to each import to only attempt the import if there is a file to import from.

@@ -62,6 +62,14 @@ import()
     echo "Skipping ${src} directory as it does not exist."
   fi
 
+  src="${DIR}/orchestration_templates"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:orchestration_templates:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
   src="${DIR}/service_dialogs"
   if [ -d "${src}" ]; then
     echo "Importing ${src} directory..."

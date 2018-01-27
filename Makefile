@@ -7,6 +7,7 @@ rm-installed-files:
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_buttons.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_customization_templates.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_provision_dialogs.rake
+	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_orchestration_templates.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_service_dialogs.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_miq_ae_datastore.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_roles.rake
@@ -28,6 +29,7 @@ install:
 	install -Dm644 rhconsulting_buttons.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_buttons.rake
 	install -Dm644 rhconsulting_customization_templates.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_customization_templates.rake
 	install -Dm644 rhconsulting_provision_dialogs.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_provision_dialogs.rake
+	install -Dm644 rhconsulting_orchestration_templates.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_orchestration_templates.rake
 	install -Dm644 rhconsulting_service_dialogs.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_service_dialogs.rake
 	install -Dm644 rhconsulting_miq_ae_datastore.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_miq_ae_datastore.rake
 	install -Dm644 rhconsulting_roles.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_roles.rake
