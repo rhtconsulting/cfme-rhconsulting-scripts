@@ -67,6 +67,9 @@ op_all () {
   mkdir_if_needed "customization_templates"
   op_customization_templates customization_templates &
 
+  mkdir_if_needed "orchestration_templates"
+  op_orchestration_templates orchestration_templates &
+
   mkdir_if_needed "reports"
   op_reports reports &
 
@@ -185,6 +188,16 @@ op_provision_dialogs () {
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:provision_dialogs:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
+  popd
+}
+
+op_orchestration_templates () {
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:orchestration_templates:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
@@ -336,6 +349,7 @@ Available Object Types:
   tags                             Export tags.
   buttons                          Export buttons.
   customization_templates          Export customization templates.
+  orchestration_templates          Export orchestration templates.
   reports                          Export custom reports.
   widgets                          Export custom widgets.
   alerts                           Export alerts.
