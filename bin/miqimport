@@ -213,7 +213,7 @@ op_all () {
       for domdir in $dir/*
       do
 	[ ! -d "$domdir" ] && continue || :
-	op_domain "$(basename $domdir)" "$domdir"
+	op_domain "$(basename $domdir)" "$dir"
       done
       continue
     fi
