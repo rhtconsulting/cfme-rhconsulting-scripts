@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# STFU
+pushd () {
+    command pushd "$@" > /dev/null
+}
+
+popd () {
+    command popd "$@" > /dev/null
+}
+
 assert_num_args () {
   num_args_received=$1
   num_args_expected=$2
@@ -205,7 +214,14 @@ op_all () {
   IMPORT_DIR=$(readlink -v -f "$1")
 
   echo "Importing everything from [$IMPORT_DIR]"
-  for dir in $IMPORT_DIR/*
+  IMPORT_DIRS=$IMPORT_DIR/*
+  # Handle order that obj_type's are loaded in.
+  # service_catalogs are dependent on dialogs existing to import.
+  # Move service_catalogs to the end of the line if found.
+  IMPORT_DIRS=$(echo $IMPORT_DIRS | sed 's/\([^ ]*service_catalogs *\)\(.*$\)/\2 \1/')
+  # buttons can have dialogs too.
+  IMPORT_DIRS=$(echo $IMPORT_DIRS | sed 's/\([^ ]*buttons *\)\(.*$\)/\2 \1/')
+  for dir in $IMPORT_DIRS
   do
     obj_type="$(basename $dir)"
     if [ "$obj_type" = "automate" ] ; then
@@ -222,6 +238,8 @@ op_all () {
 
     if [ $VALID_OP -eq 0 ]
     then
+      echo
+      echo "Importing everything from [$dir]"
       $op_func "$dir"
     else
       echo "Skipping $dir"
