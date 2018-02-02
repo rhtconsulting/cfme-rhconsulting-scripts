@@ -356,6 +356,7 @@ Available Object Types:
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.
+  all <source_dir>                 Import everything from source_dir
 
 Options:
   --overwrite                      Overwites the imported domain if it
