@@ -54,7 +54,18 @@ private
 
   def import_service_template_catalogs(catalogs)
     catalogs.each do |c|
-      puts "Service Catalog: [#{c['name']}]"
+      if c['tenant_name'].nil?
+        puts "Service Catalog: [#{c['name']}]"
+      else
+        tenant = Tenant.find_by_name(c['tenant_name'])
+        if tenant.nil?
+            puts "ERROR: Unable to locate [#{c['tenant_name']}] tenant in catalog [#{c['name']}]"
+            exit(1)
+        end
+        c.delete('tenant_name')
+        c.merge!({ "tenant_id" => tenant.id })
+        puts "Service Catalog: [#{c['name']} (#{tenant.name})]"
+      end
       catalog = ServiceTemplateCatalog.in_region(MiqRegion.my_region_number).find_or_create_by(name: c['name'])
       catalog.update_attributes!(c)
     end
@@ -62,12 +73,25 @@ private
 
   def import_service_templates(templates)
     templates.sort_by { |t| t['service_type'] == 'composite' ? 1 : 0 }.each do |t|
-      puts "Catalog Item: [#{t['name']}]"
       template = ServiceTemplate.in_region(MiqRegion.my_region_number).find_or_create_by(name: t['name'])
-      template.update_attributes!(t.slice(
+      if t['tenant_name'].nil?
+        template.update_attributes!(t.slice(
         'description', 'type', 'display', 'service_type',
         'prov_type', 'provision_cost', 'long_description'))
-
+        puts "Catalog Item: [#{t['name']}]"
+      else
+        tenant = Tenant.find_by_name(t['tenant_name'])
+        if tenant.nil?
+            puts "ERROR: Unable to locate [#{t['tenant_name']}] tenant in template [#{t['name']}]"
+            exit(1)
+        end
+        t.delete('tenant_name')
+        t.merge!({ "tenant_id" => tenant.id })
+        template.update_attributes!(t.slice(
+        'description', 'type', 'display', 'service_type',
+        'prov_type', 'provision_cost', 'long_description', 'tenant_id'))
+        puts "Catalog Item: [#{t['name']} (#{tenant.name})]"
+      end
       unless t['service_template_catalog_name'].blank?
         template.service_template_catalog = ServiceTemplateCatalog.in_region(MiqRegion.my_region_number).find_by_name(
           t['service_template_catalog_name'])
@@ -186,7 +210,13 @@ private
   end
 
   def export_service_template_catalogs(catalogs)
-    catalogs.collect { |catalog| catalog.attributes.slice('name', 'description') } 
+    catalogs.collect { |catalog| 
+      attributes = catalog.attributes.slice('name', 'description', 'tenant_id')
+      tenant_name = Tenant.find_by_id(attributes['tenant_id']).name
+      attributes.delete('tenant_id')
+      attributes.merge!({"tenant_name" => tenant_name})
+      attributes
+    } 
   end
 
   def export_service_template_options(options)
@@ -209,7 +239,10 @@ private
     templates.collect do |template|
       attributes = template.attributes.slice(
         'name', 'description', 'type', 'display', 'service_type',
-        'prov_type', 'provision_cost', 'long_description')
+        'prov_type', 'provision_cost', 'long_description', 'tenant_id')
+      tenant_name = Tenant.find_by_id(attributes['tenant_id']).name
+      attributes.delete('tenant_id')
+      attributes.merge!({"tenant_name" => tenant_name})
       attributes['options'] = export_service_template_options(template.options)
       attributes['service_template_catalog_name'] = template.service_template_catalog.name if template.service_template_catalog
       attributes['resource_actions'] = export_resource_actions(template.resource_actions)
