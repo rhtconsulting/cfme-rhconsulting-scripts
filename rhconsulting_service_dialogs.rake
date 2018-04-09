@@ -36,7 +36,6 @@ class ServiceDialogImportExport
 
   def import_dialogs_from_file(filename)
     dialogs = YAML.load_file(filename)
-    dialogs.first.delete('blueprint_id') # This field is not found in 4.6 and breaks the import of exports from previous versions.
     import_dialogs(dialogs)
   end
 
@@ -44,6 +43,7 @@ class ServiceDialogImportExport
     begin
       dialogs.each do |d|
         puts "Dialog: [#{d['label']}]"
+        d.delete('blueprint_id') # This field is not found in 4.6 and breaks the import of exports from previous versions.
         dialog = Dialog.find_by_label(d["label"])
         if dialog
           dialog.update_attributes!("dialog_tabs" => import_dialog_tabs(d))
