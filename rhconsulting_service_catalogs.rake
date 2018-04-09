@@ -173,6 +173,7 @@ private
   def import_custom_buttons(custom_buttons, template, parent)
     custom_buttons.each do |cb|
       puts "Button: [#{cb['name']}]"
+      cb.delete('applies_to_exp') unless CustomButton.attribute_names.include?('applies_to_exp')
       custom_button = parent.custom_buttons.find { |x| x.name == cb['name'] }
       custom_button = CustomButton.new(:applies_to => template) unless custom_button
 
