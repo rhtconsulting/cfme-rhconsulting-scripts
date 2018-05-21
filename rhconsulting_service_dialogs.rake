@@ -39,17 +39,50 @@ class ServiceDialogImportExport
     import_dialogs(dialogs)
   end
 
+  def build_associations_list(dialog)
+    associations = []
+    dialog["dialog_tabs"].flat_map do |tab|
+      tab["dialog_groups"].flat_map do |group|
+        group["dialog_fields"].flat_map do |field|
+          associations << { field["name"] => field["dialog_field_responders"] } if field["dialog_field_responders"].present?
+        end
+      end
+    end
+    associations
+  end
+
+  def check_field_associations(fields)
+    dialog_field_association_validator = DialogFieldAssociationValidator.new
+    associations = fields.each_with_object({}) { |df, hsh| hsh.merge!(df["name"] => df["dialog_field_responders"]) if df["dialog_field_responders"].present? }
+    raise DialogFieldAssociationCircularReferenceError if dialog_field_association_validator.circular_references(associations)
+  end
+
+  def build_associations(dialog, association_list)
+    fields = dialog.dialog_fields
+    association_list.each do |association|
+      association.each_value do |value|
+        value.each do |responder|
+          next if fields.select { |field| field.name == responder }.empty?
+          DialogFieldAssociation.create(:trigger_id => fields.find { |field| field.name.include?(association.keys.first) }.id,
+                                        :respond_id => fields.find { |field| field.name == responder }.id)
+        end
+      end
+    end
+  end
+
   def import_dialogs(dialogs)
     begin
       dialogs.each do |d|
         puts "Dialog: [#{d['label']}]"
+        association_list = build_associations_list(d)
         d.delete('blueprint_id') # This field is not found in 4.6 and breaks the import of exports from previous versions.
         dialog = Dialog.find_by_label(d["label"])
         if dialog
           dialog.update_attributes!("dialog_tabs" => import_dialog_tabs(d))
         else
-          Dialog.create(d.merge("dialog_tabs" => import_dialog_tabs(d)))
+          dialog = Dialog.create(d.merge("dialog_tabs" => import_dialog_tabs(d)))
         end
+        build_associations(dialog,association_list)
       end
     rescue
       raise ParsedNonDialogYamlError
@@ -69,7 +102,9 @@ class ServiceDialogImportExport
   end
 
   def import_dialog_fields(dialog_group)
+    check_field_associations(dialog_group["dialog_fields"])
     dialog_group["dialog_fields"].collect do |dialog_field|
+      dialog_field.delete('dialog_field_responders')
 
       # Allow for importing the old format or the new format
       # This will allow for compatibility of exports in both formats
@@ -120,6 +155,10 @@ class ServiceDialogImportExport
         field_attributes["resource_action"]["ae_instance"] = dialog_field.resource_action.ae_instance
         field_attributes["resource_action"]["ae_message"] = dialog_field.resource_action.ae_message
         field_attributes["resource_action"]["ae_attributes"] = dialog_field.resource_action.ae_attributes
+      end
+      field_attributes["dialog_field_responders"] = []
+      dialog_field.dialog_field_responders.each do |responder|
+        field_attributes["dialog_field_responders"].push(responder.name)
       end
       field_attributes
     end
