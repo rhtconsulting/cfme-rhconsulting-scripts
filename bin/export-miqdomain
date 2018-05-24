@@ -36,7 +36,7 @@ absolute_path()
 
 export ()
 {
-  mkdir -p "${BUILDDIR}"/{provision_dialogs,service_catalogs,service_dialogs,roles,tags,buttons,customization_templates,reports,widgets,policies,scanitems,alerts,alertsets,miq_ae_datastore}
+  mkdir -p "${BUILDDIR}"/{provision_dialogs,service_catalogs,service_dialogs,roles,tags,buttons,customization_templates,reports,widgets,policies,scanitems,alerts,alertsets,miq_ae_datastore,scriptsrc}
 
   cd /var/www/miq/vmdb
   bin/rake rhconsulting:provision_dialogs:export["${BUILDDIR}/provision_dialogs"]
@@ -50,6 +50,7 @@ export ()
   bin/rake rhconsulting:customization_templates:export["${BUILDDIR}/customization_templates/customization_templates.yml"]
   bin/rake rhconsulting:miq_policies:export["${BUILDDIR}/policies"]
   bin/rake rhconsulting:miq_scanprofiles:export["${BUILDDIR}/scanitems"]
+  bin/rake rhconsulting:miq_scriptsrc:export["${BUILDDIR}/scriptsrc"]
   bin/rake rhconsulting:miq_alerts:export["${BUILDDIR}/alerts"]
   bin/rake rhconsulting:miq_alertsets:export["${BUILDDIR}/alertsets"]
   bin/rake "rhconsulting:miq_ae_datastore:export[${DOMAIN},${BUILDDIR}/miq_ae_datastore]"

@@ -54,6 +54,14 @@ import()
 {
   cd /var/www/miq/vmdb
 
+  src="${DIR}/scriptsrc"
+  if [ -d "${src}" ]; then
+    echo "Importing ${src} directory..."
+    bin/rake rhconsulting:miq_scriptsrc:import[${src}]
+  else
+    echo "Skipping ${src} directory as it does not exist."
+  fi
+
   src="${DIR}/provision_dialogs"
   if [ -d "${src}" ]; then
     echo "Importing ${src} directory..."
