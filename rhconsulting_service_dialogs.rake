@@ -156,9 +156,11 @@ class ServiceDialogImportExport
         field_attributes["resource_action"]["ae_message"] = dialog_field.resource_action.ae_message
         field_attributes["resource_action"]["ae_attributes"] = dialog_field.resource_action.ae_attributes
       end
-      field_attributes["dialog_field_responders"] = []
-      dialog_field.dialog_field_responders.each do |responder|
-        field_attributes["dialog_field_responders"].push(responder.name)
+      if dialog_field.respond_to?(:dialog_field_responders)
+        field_attributes["dialog_field_responders"] = []
+        dialog_field.dialog_field_responders.each do |responder|
+          field_attributes["dialog_field_responders"].push(responder.name)
+        end
       end
       field_attributes
     end
