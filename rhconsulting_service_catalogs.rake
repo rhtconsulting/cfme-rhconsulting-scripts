@@ -109,8 +109,36 @@ private
     end
   end
 
+  ##
+  ## get_repo and get_playbook would retry things several times
+  ## because the objects are created out-of-band on the Embedded
+  ## ansible tower system, so they may not have been created
+  ## when this code gets called.
+  ##
+  def get_repo(repo_name)
+    retries = 10
+    begin
+      retries -= 1
+      repo = ManageIQ::Providers::EmbeddedAnsible::AutomationManager::ConfigurationScriptSource.find_by(:name => repo_name)
+      break if ! repo.nil?
+      sleep 6
+    end while retries > 0
+    return repo
+  end
+  def get_playbook(repo_id, playbook_name)
+    retries = 10
+    begin
+      retries -= 1
+      pb = ManageIQ::Providers::EmbeddedAnsible::AutomationManager::Playbook.find_by(:configuration_script_source_id=> repo_id, :name => playbook_name)
+      break if ! pb.nil?
+      sleep 6
+    end while retries > 0
+    return pb
+  end
+
   def import_service_template_options(options, template)
     template.reload
+    #puts options.to_yaml
     unless options[:button_order].blank?
       custom_buttons = template.custom_buttons + template.custom_button_sets.collect do |set|
         set.reload
@@ -132,6 +160,33 @@ private
         end
         "#{type}-#{id}"
       end
+    end
+    if options[:config_info]
+      options[:config_info].each do |k,v|
+	if v[:repository_name]
+	  repo = get_repo(v[:repository_name])
+	  v[:repository_id] = repo.id if ! repo.nil?
+	  v.delete(:repository_name)
+	end
+	if v[:playbook_name]
+	  if v[:repository_id]
+	    playbook = get_playbook(v[:repository_id],v[:playbook_name])
+	    v[:playbook_id] = playbook.id if ! playbook.nil?
+	  end
+	  v.delete(:playbook_name)
+	end
+	if v[:credential_name]
+	  auth = ::Authentication.find_by(:name => v[:credential_name])
+	  v[:credential_id] = auth.id if ! auth.nil?
+	  v.delete(:credential_name)
+	end
+	if v[:dialog_label]
+	  dlg = ::Dialog.find_by(:label => v[:dialog_label])
+	  v[:dialog_id] = dlg.id
+	  v.delete(:dialog_label)
+	end
+      end
+      #puts options[:config_info].to_yaml
     end
     template.options = options
   end
@@ -221,6 +276,7 @@ private
   end
 
   def export_service_template_options(options)
+    #puts options.to_yaml
     if options[:button_order]
       options[:button_order] = options[:button_order].collect do |order|
         type, id = order.split('-')
@@ -233,7 +289,43 @@ private
         "#{type}-#{record.name}" if record
       end.compact
     end
-    options
+    if options[:config_info]
+      options[:config_info].each do |k,v|
+        if v[:repository_id]
+	  r = ManageIQ::Providers::EmbeddedAnsible::AutomationManager::ConfigurationScriptSource.find_by(:id => v[:repository_id])
+	  if ! r.nil?
+	    repo_id = v[:repository_id]
+	    v[:repository_name] = r.name
+	    v.delete(:repository_id)
+	    if v[:playbook_id]
+	      pb_id = v[:playbook_id]
+	      pb = ManageIQ::Providers::EmbeddedAnsible::AutomationManager::Playbook.find_by(:configuration_script_source_id=> repo_id, :id => pb_id)
+	      v[:playbook_name] = pb.name
+	      v.delete(:playbook_id)
+	    end
+	    # :playbook_id
+	  end
+	end
+	# :repository_id
+	if v[:credential_id]
+	  auth = ::Authentication.find_by(:id => v[:credential_id])
+	  if ! auth.nil?
+	    v[:credential_name] = auth.name
+	    v.delete(:credential_id)
+	  end
+	end
+	# :credential_id
+	if v[:dialog_id]
+	  dd = ::Dialog.find_by(:id => v[:dialog_id])
+	  if ! dd.nil?
+	    v[:dialog_label] = dd.label
+	    v.delete(:dialog_id)
+	  end
+	end
+	# :dialog_id
+      end
+    end
+    return options
   end
 
   def export_service_templates(templates)
