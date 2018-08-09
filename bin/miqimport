@@ -383,6 +383,7 @@ Available Object Types:
   policies                         Import policies.
   scanitems                        Import scanitems.
   scriptsrc                        Import config script sources.
+  schedules                        Import schedules (non-widget type only).
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.
