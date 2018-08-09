@@ -232,7 +232,7 @@ op_schedules () {
   assert_export_dir_exists "$EXPORT_DIR"
 
   pushd /var/www/miq/vmdb
-  bin/rake "rhconsulting:schedules:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
+  bin/rake "rhconsulting:miq_schedules:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 

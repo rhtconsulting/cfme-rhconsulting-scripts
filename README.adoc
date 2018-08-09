@@ -163,7 +163,7 @@ rm -fR ${BUILDDIR}
 mkdir -p ${BUILDDIR}/{service_catalogs,dialogs,roles,tags,buttons,customization_templates,policies,alerts,alertsets,widgets,miq_ae_datastore,scanitems,scriptsrc}
 
 cd /var/www/miq/vmdb
-bin/rake rhconsulting:provision_dialogs:export[${BUILDDIR}/schedules]
+bin/rake rhconsulting:miq_schedules:export[${BUILDDIR}/schedules]
 bin/rake rhconsulting:provision_dialogs:export[${BUILDDIR}/provision_dialogs]
 bin/rake rhconsulting:service_dialogs:export[${BUILDDIR}/service_dialogs]
 bin/rake rhconsulting:service_catalogs:export[${BUILDDIR}/service_catalogs]
@@ -203,6 +203,7 @@ BUILDDIR=/tmp/CFME-build
 DOMAIN_IMPORT=YourDomainHere
 
 cd /var/www/miq/vmdb
+bin/rake rhconsulting:miq_schedules:import[${BUILDDIR}/schedules]
 bin/rake rhconsulting:miq_scriptsrc:import[${BUILDDIR}/scriptsrc]
 bin/rake rhconsulting:provision_dialogs:import[${BUILDDIR}/provision_dialogs]
 bin/rake rhconsulting:service_dialogs:import[${BUILDDIR}/service_dialogs]
