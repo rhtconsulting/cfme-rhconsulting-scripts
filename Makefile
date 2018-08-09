@@ -1,4 +1,4 @@
-VERSION := 0.11
+VERSION := 0.12
 RELEASE := 1
 
 .PHONY: clean rpm install clean-install
@@ -17,6 +17,7 @@ rm-installed-files:
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_widgets.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_policies.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_alerts.rake
+	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_schedules.rake
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_illegal_chars.rb
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_options.rb
 	rm -f /usr/bin/miqexport
@@ -27,6 +28,7 @@ rm-installed-files:
 	rm -f /var/www/miq/vmdb/lib/tasks/rhconsulting_scriptsrc.rake
 
 install:
+	install -Dm644 rhconsulting_buttons.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_schedules.rake
 	install -Dm644 rhconsulting_buttons.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_buttons.rake
 	install -Dm644 rhconsulting_customization_templates.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_customization_templates.rake
 	install -Dm644 rhconsulting_provision_dialogs.rake /var/www/miq/vmdb/lib/tasks/rhconsulting_provision_dialogs.rake
