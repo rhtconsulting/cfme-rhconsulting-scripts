@@ -139,7 +139,6 @@ op_scriptsrc () {
   popd
 }
 
-
 op_provision_dialogs () {
   assert_num_args $# 1
   IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
@@ -187,6 +186,16 @@ op_roles () {
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:roles:import[${IMPORT_FILE_OR_DIR}]"
+  popd
+}
+
+op_schedules () {
+  assert_num_args $# 1
+  IMPORT_FILE_OR_DIR=$(readlink -v -f "$1")
+  assert_import_file_or_dir_exists "$IMPORT_FILE_OR_DIR"
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_schedules:import[${IMPORT_FILE_OR_DIR}]"
   popd
 }
 
@@ -272,7 +281,6 @@ contains () {
 
   return 1  
 }
-
 
 parse_arguments () {
   # initialize non-required arguments before the loop in case they are
@@ -383,6 +391,7 @@ Available Object Types:
   policies                         Import policies.
   scanitems                        Import scanitems.
   scriptsrc                        Import config script sources.
+  schedules                        Import schedules (non-widget type only).
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.

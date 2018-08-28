@@ -1,5 +1,5 @@
 Name:      cfme-rhconsulting-scripts
-Version:   0.11
+Version:   0.12
 Release:   1
 Summary:   Red Hat Consulting Scripts for CloudForms
 
@@ -47,6 +47,7 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 /var/www/miq/vmdb/lib/tasks/rhconsulting_options.rb
 /var/www/miq/vmdb/lib/tasks/rhconsulting_scanitems.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_scriptsrc.rake
+/var/www/miq/vmdb/lib/tasks/rhconsulting_schedules.rake
 /usr/bin/miqexport
 /usr/bin/miqimport
 /usr/bin/export-miqdomain
@@ -55,9 +56,11 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 %post
 
 %changelog
+* Thu Aug 9 2018 Dustin Scott,Lynn Dixon <dscott@redhat.com,ldixon@redhat.com> 0.12-1
+- Added support for schedules (non-widget type only)
+
 * Fri Jan 26 2017 Jeffrey Cutter <jcutter@redhat.com>  0.11-1
 - Added support for customization specifications.
-
 
 * Wed Dec 12 2016 Andrew Spurrier <andrew.spurrier@redhat.com> 0.10-1
 - Added check that the user supplied an absolute path.
