@@ -156,8 +156,8 @@ private
   end
 
   def import_schedules(import_dir)
-    MiqSchedule.transaction do
-      Dir.glob("#{import_dir}/*yaml") do |filename|
+    Dir.glob("#{import_dir}/*yaml") do |filename|
+      MiqSchedule.transaction do
         schedule            = YAML.load_file(filename)
         normalized_schedule = normalize_import_data(schedule)
         MiqSchedule.create(normalized_schedule)
