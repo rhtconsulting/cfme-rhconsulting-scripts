@@ -45,6 +45,7 @@ install --backup --mode=0755 -t "%{buildroot}/usr/bin" bin/import-miqdomain
 /var/www/miq/vmdb/lib/tasks/rhconsulting_alerts.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_illegal_chars.rb
 /var/www/miq/vmdb/lib/tasks/rhconsulting_options.rb
+/var/www/miq/vmdb/lib/tasks/rhconsulting_model_attributes.rb
 /var/www/miq/vmdb/lib/tasks/rhconsulting_scanitems.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_scriptsrc.rake
 /var/www/miq/vmdb/lib/tasks/rhconsulting_schedules.rake
