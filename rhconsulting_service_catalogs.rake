@@ -103,7 +103,8 @@ private
       import_service_resources(t['service_resources'] || [], template)
       import_custom_buttons(t['custom_buttons'], template, template)
       import_custom_button_sets(t['custom_button_sets'], template)
-
+      import_job_template(t['job_template'], template)
+	    
       import_service_template_options(t['options'], template)
       template.save!
     end
@@ -189,6 +190,13 @@ private
       #puts options[:config_info].to_yaml
     end
     template.options = options
+  end
+
+  def import_job_template(job_template_name, template)
+    if job_template_name.present? && template.is_a?(ServiceTemplateAnsibleTower)
+      job_template = ManageIQ::Providers::AnsibleTower::AutomationManager::ConfigurationScript.find_by_name(job_template_name)
+      template.job_template = job_template unless job_template.nil?
+    end
   end
 
   def import_resource_actions(resource_actions, template)
@@ -342,6 +350,7 @@ private
       attributes['service_resources'] = export_service_resources(template.service_resources) if template.service_type == "composite"
       attributes['custom_buttons'] = export_custom_buttons(template.custom_buttons)
       attributes['custom_button_sets'] = export_custom_button_sets(template.custom_button_sets)
+      attributes['job_template'] = template.job_template.name if template.is_a?(ServiceTemplateAnsibleTower) && !template.job_template.nil?
       attributes
     end
   end
