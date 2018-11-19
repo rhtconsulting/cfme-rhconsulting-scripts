@@ -127,7 +127,7 @@ private
   def export_schedules(export_dir, options)
     MiqSchedule.all.each do |schedule|
       # skip the schedule if it is invalid
-      next if @invalid_schedules.include(schedule.towhat)
+      next if @invalid_schedules.include?(schedule.towhat)
 
       # normalize the attributes from the model
       normalized_attrs = normalize_export_data(schedule.attributes)
