@@ -80,22 +80,12 @@ class ButtonsImportExport
     #   end
     #   count += 1
     #end
-    resource_action = ResourceAction.new
-    all_ra = ResourceAction.in_region(MiqRegion.my_region_number)
-    all_ra.each do |find_action|
-      #  puts "checking ra: #{find_action['id']} if it has resource_id of #{find_action['resource_id']}"
-      if find_action['resource_id'] == custom_button.id
-        #    puts "FOUND: #{find_action.inspect}"
-        resource_action = find_action
-        resource_action.reload
-      end
-    end
+    resource_action = ResourceAction.in_region(MiqRegion.my_region_number).find_or_create_by(
+      resource_id: custom_button.id, resource_type: 'CustomButton')
 
     #puts "ResourceActions PRE: #{resource_action.inspect}"
     ra = {}
     ra['action'] = resource_actions['action']
-    ra['resource_id'] = custom_button.id
-    ra['resource_type'] = "CustomButton"
     ra['ae_namespace'] = resource_actions['ae_namespace']
     ra['ae_class'] = resource_actions['ae_class']
     ra['ae_instance'] = resource_actions['ae_instance']
@@ -149,7 +139,9 @@ class ButtonsImportExport
           custom_button['wait_for_complete'] = cb['wait_for_complete']
           custom_button['visibility'] = cb['visibility']
           custom_button['visibility_expression'] = cb['visibility_expression']
+          custom_button['enablement_expression'] = cb['enablement_expression']
           custom_button['applies_to_id'] = cb['applies_to_id']
+          custom_button['disabled_text'] = cb['disabled_text']
           #custom_button['resource_actions'] = cb['resource_actions']
           custom_button.resource_action = cb['resource_actions']
           custom_button.update_attributes!(cb) unless !custom_button.nil?
@@ -207,7 +199,8 @@ class ButtonsImportExport
       custom_buttons.collect do |custom_button|
         button = custom_button.attributes.slice(
             'description', 'applies_to_class', 'applies_to_exp', 'options', 'userid',
-            'wait_for_complete', 'name', 'visibility', 'visibility_expression', 'applies_to_id')
+            'wait_for_complete', 'name', 'visibility', 'visibility_expression', 
+            'enablement_expression', 'applies_to_id', 'disabled_text')
         button['resource_actions'] = export_resource_actions(custom_button.resource_action)
         buttons << button
       end

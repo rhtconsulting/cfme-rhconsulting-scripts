@@ -91,6 +91,9 @@ op_all () {
   mkdir_if_needed "scriptsrc"
   op_scriptsrc scriptsrc &
 
+  mkdir_if_needed "schedules"
+  op_schedules schedules &
+
   mkdir_if_needed "automate"
   pushd "automate"
   DOMAIN_ROOT_DIR=`pwd`
@@ -220,6 +223,16 @@ op_service_dialogs () {
 
   pushd /var/www/miq/vmdb
   bin/rake "rhconsulting:service_dialogs:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
+  popd
+}
+
+op_schedules () {
+  assert_num_args $# 1
+  EXPORT_DIR=$(readlink -v -f "$1")
+  assert_export_dir_exists "$EXPORT_DIR"
+
+  pushd /var/www/miq/vmdb
+  bin/rake "rhconsulting:miq_schedules:export[${EXPORT_DIR},keep_spaces=${KEEP_SPACES}]"
   popd
 }
 
@@ -369,6 +382,7 @@ Available Object Types:
   policies                         Export policies.
   scanitems                        Export scanitems.
   scriptsrc                        Export config script sources.
+  schedules                        Export schedules (non-widget type only).
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
