@@ -6,13 +6,17 @@ require_relative 'rhconsulting_model_attributes'
 class MiqSchedulesImportExport
   class ParsedNonDialogYamlError < StandardError; end
 
-  attr_reader :widget_schedules, :rejected_attrs, :file_depot_key, :zone_key, :role_types
+  attr_reader :invalid_schedules, :rejected_attrs, :file_depot_key, :zone_key, :role_types
 
   def initialize
-    @file_depot_key   = :file_depot_export_data        # the key used to store exported file depot data
-    @zone_key         = :zone_export_data              # the key used to store exported zone data
-    @widget_schedules = false                          # whether to enable export of widget schedules
-    @rejected_attrs   = [                              # attributes to leave out during export
+    @file_depot_key    = :file_depot_export_data        # the key used to store exported file depot data
+    @zone_key          = :zone_export_data              # the key used to store exported zone data
+    @invalid_schedules = [
+      'MiqAlert',
+      'MiqReport',
+      'MiqWidget'
+    ]
+    @rejected_attrs    = [                              # attributes to leave out during export
       :file_depot_id,
       :miq_schedule_id,
       :miq_search_id,
@@ -20,10 +24,13 @@ class MiqSchedulesImportExport
       :task_id,
       :zone_id
     ]
-    @role_types       = {                              # mapping of schedule types to their required roles
+    @role_types        = {                              # mapping of schedule types to their required roles
       'AutomationRequest' => 'automate',
       'DatabaseBackup'    => 'database_operations',
       'EmsCluster'        => 'smartstate',
+      'MiqAlert'          => 'notifier',
+      'MiqReport'         => 'reporting',
+      'MiqWidget'         => 'reporting',
       'Host'              => 'smartstate',
       'Vm'                => 'smartstate'
     }
@@ -118,13 +125,10 @@ private
   end
 
   def export_schedules(export_dir, options)
-    schedules = if @widget_schedules
-                  MiqSchedule.all
-                else
-                  MiqSchedule.where('towhat != ?', 'MiqWidget')
-                end
+    MiqSchedule.all.each do |schedule|
+      # skip the schedule if it is invalid
+      next if @invalid_schedules.include(schedule.towhat)
 
-    schedules.each do |schedule|
       # normalize the attributes from the model
       normalized_attrs = normalize_export_data(schedule.attributes)
 
