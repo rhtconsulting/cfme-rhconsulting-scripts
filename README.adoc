@@ -51,7 +51,8 @@ cp *.rb /var/www/miq/vmdb/lib/tasks/
 
 == Export command
 ----
-Usage: miqexport <object_type> <additional_params> <exportdest>
+
+Usage: miqexport [OPTION...] <object_type> <additional_params> <exportdest>
 
 This command exports the specified object type into the <exportdest>,
 which may be a file or directory.
@@ -79,6 +80,7 @@ Available Object Types:
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
+  all <target_dir>                 Export everything to target_dir
 
 Options:
   -s, --keep-spaces                Export filenames with spaces instead of
@@ -102,6 +104,7 @@ miqexport service_dialogs /tmp/dialogs
 
 == Import Command
 ----
+
 Usage: miqimport <object_type> <additional_params> <importsource>
 
 This command imports the specified object type from the <importsource>,
@@ -121,15 +124,44 @@ Available Object Types:
   orchestration_templates          Import orchestration templates.
   reports                          Import custom reports.
   widgets                          Import custom widgets.
-  alerts                           Import alerts.
-  alertsets                        Import alert sets.
   policies                         Import policies.
   scanitems                        Import scan items.
-  scriptsrc                        Import config script sources
+  scriptsrc                        Import config script sources.
   schedules                        Import schedules (non-widget type only).
   domain <name>                    Import the specified domain from the
                                    <importsource> directory. <name> MUST
                                    be specified.
+  all <source_dir>                 Import everything from source_dir
+
+Options:
+  --overwrite                      Overwites the imported domain if it
+                                   already exists in the database.
+                                   Only used for "domain" object type.
+                                   (Default = overwrite)
+
+  --no-overwrite                   Do NOT overwite the domain if it
+                                   already exists in the database.
+                                   Only used for "domain" object type.
+                                   (Default = overwrite)
+
+  --enabled                        Enables the domain after it is imported.
+                                   Only used for "domain" object type.
+                                   (Default = enabled)
+
+  --disabled                       Disables the domain after it is imported.
+                                   Only used for "domain" object type.
+                                   (Default = enabled)
+
+  --tenant-name=NAME               Name of the Tenant for the domain after it is
+                                   imported.
+                                   Only used for "domain" object type.
+                                   (Default = "")
+
+  --tenant-id=ID                   ID of the Tenant for the domain after it is
+                                   imported.
+                                   Only used for "domain" object type.
+                                   (Default = "")
+
 ----
 
 == Example Imports
