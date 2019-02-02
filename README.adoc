@@ -51,7 +51,8 @@ cp *.rb /var/www/miq/vmdb/lib/tasks/
 
 == Export command
 ----
-Usage: miqexport <object_type> <additional_params> <exportdest>
+
+Usage: miqexport [OPTION...] <object_type> <additional_params> <exportdest>
 
 This command exports the specified object type into the <exportdest>,
 which may be a file or directory.
@@ -79,6 +80,7 @@ Available Object Types:
   domain <name>                    Export the specified domain from the
                                    Automate Engine Datastore. <name> MUST
                                    be specified.
+  all <target_dir>                 Export everything to target_dir
 
 Options:
   -s, --keep-spaces                Export filenames with spaces instead of
