@@ -17,6 +17,17 @@ ManageIQ Tracking Issue: https://github.com/ManageIQ/manageiq/issues/15350
 Scripts in this repo that are now depricated:
 
 * rhconsulting_alerts.rake
+* rhconsulting_buttons.rake
+* rhconsulting_customization_templates.rake
+* rhconsulting_policies.rake
+* rhconsulting_provision_dialogs.rake
+* rhconsulting_service_dialogs.rake
+* rhconsutling_tags.rake
+* rhconsulting_roles.rake
+* rhconsulting_reports.rake
+* rhconsulting_widgets.rake
+* rhconsulting_scanitems.rake
+
 ====
 
 == Install
