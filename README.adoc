@@ -58,6 +58,7 @@ Option 2) Copy files manually
 cd cfme-rhconsulting-scripts/
 cp *.rake /var/www/miq/vmdb/lib/tasks/
 cp *.rb /var/www/miq/vmdb/lib/tasks/
+cp bin/* /usr/bin
 ----
 
 == Export command
